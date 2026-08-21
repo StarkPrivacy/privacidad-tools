@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacidad Tools — Utilidades de privacidad</title>
-  <meta name="description" content="Panel de herramientas de privacidad client-side: generadores, comprobador HIBP, metadatos, compresión y conversión. Sin rastreo." />
+  <title>Privacidad Tools — Utilidades de privacidad offline</title>
+  <meta name="description" content="Herramientas de privacidad que funcionan en tu navegador: generadores, hub de filtraciones de correo, metadatos, hashes, compresión y más. Sin rastreo. Offline tras cargar." />
   <meta name="theme-color" content="#05070a" />
   <meta name="color-scheme" content="dark" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,192 +28,188 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { background: #05070a; }
-    .cyber-grid {
-      background-image:
-        linear-gradient(rgba(10,132,255,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(10,132,255,.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-    .glow-blue { box-shadow: 0 0 20px rgba(10,132,255,.22), 0 0 40px rgba(10,132,255,.08); }
+    .glow-blue { box-shadow: 0 0 24px rgba(10,132,255,.2), 0 0 48px rgba(10,132,255,.08); }
     .tool-panel { display: none; }
     .tool-panel.active { display: block; }
-    .nav-item.active { background: rgba(10,132,255,.12); border-color: rgba(10,132,255,.35); color: #fff; }
-    .nav-item.active svg { color: #0a84ff; }
+    .tab-btn.active { color: #fff; border-color: #0a84ff; background: rgba(10,132,255,.12); }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #05070a; }
     ::-webkit-scrollbar-thumb { background: #1a2230; border-radius: 4px; }
     input[type=range] { accent-color: #0a84ff; }
     .result-box { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .progress-track { height: 6px; background: #151a24; border-radius: 999px; overflow: hidden; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, #0a84ff, #3b9eff); width: 0%; transition: width .25s ease; border-radius: 999px; }
+    .edu-box { background: linear-gradient(160deg, rgba(10,132,255,.06), transparent); }
   </style>
 </head>
 <body class="font-sans text-mist antialiased selection:bg-neon/30 selection:text-white min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 border-b border-white/5 bg-void/85 backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+  <header class="sticky top-0 z-40 border-b border-white/5 bg-void/90 backdrop-blur-xl">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
       <a href="#" class="flex items-center gap-2.5 group" onclick="showTool('home'); return false;">
         <div class="w-8 h-8 rounded-lg bg-neon/10 border border-neon/30 flex items-center justify-center group-hover:bg-neon/20 transition">
-          <svg class="w-4 h-4 text-neon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
+          <svg class="w-4 h-4 text-neon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <div class="leading-tight">
           <span class="text-white font-semibold tracking-tight">Privacidad</span><span class="text-steel">/</span><span class="text-neon font-medium">tools</span>
         </div>
       </a>
-      <nav class="hidden md:flex items-center gap-5 text-sm text-steel">
+      <nav class="hidden lg:flex items-center gap-4 text-sm text-steel">
         <a href="https://starkprivacy.github.io/privacidad/" class="hover:text-mist transition" target="_blank" rel="noopener">privacidad.me</a>
         <a href="https://github.com/StarkPrivacy/privacidad-news" class="hover:text-mist transition" target="_blank" rel="noopener">news</a>
         <a href="https://boringprivacy.io" class="hover:text-mist transition" target="_blank" rel="noopener">Academia</a>
         <a href="https://github.com/StarkPrivacy/privacidad-tools" class="hover:text-mist transition" target="_blank" rel="noopener">Código</a>
       </nav>
-      <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg border border-white/10 text-steel hover:text-white" aria-label="Menú">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
+      <div class="flex items-center gap-2">
+        <span class="hidden sm:inline text-[11px] text-steel/80 border border-white/10 rounded-full px-2.5 py-1">Offline tras cargar</span>
+        <button id="mobileToolsBtn" class="lg:hidden p-2 rounded-lg border border-white/10 text-steel hover:text-white text-sm" aria-label="Herramientas">Herramientas</button>
+      </div>
+    </div>
+    <!-- Mobile tool list -->
+    <div id="mobileTools" class="hidden lg:hidden border-t border-white/5 bg-void px-4 py-3 space-y-1 max-h-72 overflow-y-auto">
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('home')">Inicio</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('nombres')">Generador de nombres</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('passwords')">Generador de contraseñas</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('filtraciones')">Filtraciones de correo</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('metadatos')">Limpiador de metadatos</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('acortador')">Identificadores cortos</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('compresor')">Compresor de imágenes</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('convertidor')">Convertidor</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('hashes')">Calculadora de hashes</button>
+      <button class="block w-full text-left px-3 py-2 rounded-lg text-sm text-steel hover:bg-white/5" onclick="showTool('passphrases')">Frases de paso</button>
     </div>
   </header>
 
-  <div class="flex-1 flex max-w-7xl mx-auto w-full">
-    <!-- Sidebar -->
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-30 w-64 md:w-56 lg:w-60 border-r border-white/5 bg-void/95 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none pt-16 md:pt-6 pb-6 px-3 transform -translate-x-full md:translate-x-0 transition-transform duration-200 overflow-y-auto">
-      <p class="px-3 mb-3 text-[11px] uppercase tracking-wider text-steel/70 font-medium">Herramientas</p>
-      <nav class="space-y-1" id="toolNav">
-        <button data-tool="home" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0 text-steel" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Inicio
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+    <!-- HOME -->
+    <section id="panel-home" class="tool-panel active">
+      <div class="mb-10">
+        <p class="text-neon text-xs font-medium tracking-wider uppercase mb-2">Stark Privacy</p>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">Utilidades de privacidad que no salen de tu dispositivo</h1>
+        <p class="text-steel text-base max-w-2xl leading-relaxed">
+          Todas las herramientas se ejecutan en el navegador. Tras cargar la página puedes usar la mayoría sin conexión.
+          No hay cuentas, no hay cookies de seguimiento y los archivos que procesas no se suben a ningún servidor.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+        <button onclick="showTool('nombres')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Generador de nombres</h2>
+          <p class="text-sm text-steel">Alias con estilos distintos y únicos para perfiles anónimos.</p>
         </button>
-        <button data-tool="nombres" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left text-steel hover:text-mist hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Generador de nombres
+        <button onclick="showTool('passwords')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Generador de contraseñas</h2>
+          <p class="text-sm text-steel">Aleatoriedad criptográfica, estimación de fuerza y consejos de uso.</p>
         </button>
-        <button data-tool="passwords" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left text-steel hover:text-mist hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Generador de contraseñas
+        <button onclick="showTool('filtraciones')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Filtraciones de correo</h2>
+          <p class="text-sm text-steel">Hub de información: qué se filtra, de dónde sale y qué hacer.</p>
         </button>
-        <button data-tool="hibp" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left text-steel hover:text-mist hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Contraseñas filtradas
+        <button onclick="showTool('metadatos')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Limpiador de metadatos</h2>
+          <p class="text-sm text-steel">Elimina EXIF, GPS y datos ocultos de tus fotos.</p>
         </button>
-        <button data-tool="metadatos" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left text-steel hover:text-mist hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          Limpiador de metadatos
+        <button onclick="showTool('acortador')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Identificadores cortos</h2>
+          <p class="text-sm text-steel">Códigos locales offline. Sin servicios externos ni CORS.</p>
         </button>
-        <button data-tool="acortador" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left text-steel hover:text-mist hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          Acortador de enlaces
+        <button onclick="showTool('compresor')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Compresor de imágenes</h2>
+          <p class="text-sm text-steel">Reduce peso con control de calidad. Todo en el navegador.</p>
         </button>
-        <button data-tool="compresor" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left text-steel hover:text-mist hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          Compresor
+        <button onclick="showTool('convertidor')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Convertidor</h2>
+          <p class="text-sm text-steel">Imágenes (PNG / JPEG / WebP). Base para más formatos.</p>
         </button>
-        <button data-tool="convertidor" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-sm text-left text-steel hover:text-mist hover:bg-white/5 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-          Convertidor
+        <button onclick="showTool('hashes')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Calculadora de hashes</h2>
+          <p class="text-sm text-steel">SHA-256, SHA-1 y más para verificar integridad de archivos.</p>
         </button>
-      </nav>
-      <div class="mt-8 px-3">
-        <div class="p-3 rounded-xl bg-panel border border-white/5 text-xs text-steel leading-relaxed">
-          Todo se ejecuta en tu navegador. Ningún archivo ni contraseña completa abandona tu dispositivo (salvo el prefijo de hash de 5 caracteres en HIBP).
+        <button onclick="showTool('passphrases')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+          <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <h2 class="font-semibold text-white mb-1">Frases de paso</h2>
+          <p class="text-sm text-steel">Passphrases memorables y fuertes (estilo diceware).</p>
+        </button>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-panel border border-white/5 edu-box">
+        <h3 class="text-white font-semibold mb-2">Por qué este enfoque</h3>
+        <p class="text-sm text-steel leading-relaxed max-w-3xl">
+          Las herramientas «en la nube» reciben tus archivos y a menudo tus datos. Aquí el procesamiento ocurre en tu equipo.
+          El único tráfico de red opcional es el de consultas a bases de filtraciones (cuando las uses).
+          El resto funciona sin internet una vez cargada la página.
+        </p>
+      </div>
+    </section>
+
+    <!-- NOMBRES -->
+    <section id="panel-nombres" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Generador de nombres</h1>
+        <p class="text-steel leading-relaxed">
+          Un alias distinto cada vez. Evita patrones repetitivos (adj_sustantivo_número) que facilitan correlacionar cuentas.
+          Usa estilos diferentes para que cada nombre tenga una estructura propia. Ideal para perfiles, cuentas de prueba o identidades operativas.
+        </p>
+      </div>
+      <div class="grid lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-2 space-y-5 p-6 rounded-2xl bg-panel border border-white/5">
+          <div>
+            <label class="block text-sm text-steel mb-2">Estilo de generación</label>
+            <select id="nameStyle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50">
+              <option value="sombra">Sombra (adj + sustantivo)</option>
+              <option value="tecnico">Técnico (sílabas + hex)</option>
+              <option value="natural">Natural (animal + lugar)</option>
+              <option value="corto">Corto pronunciable</option>
+              <option value="hex">Identificador hex</option>
+              <option value="aleatorio">Aleatorio (mezcla de estilos)</option>
+            </select>
+          </div>
+          <button id="nameBtn" onclick="generateName()" class="w-full px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Generar</button>
+        </div>
+        <div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 flex flex-col justify-center min-h-[180px]">
+          <p class="text-xs text-steel mb-2 uppercase tracking-wider">Resultado</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <span id="nameResult" class="text-2xl sm:text-3xl font-semibold text-white result-box break-all">—</span>
+            <button onclick="copyPlain('nameResult')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel hover:text-white hover:border-neon/40 transition">Copiar</button>
+          </div>
         </div>
       </div>
-    </aside>
+    </section>
 
-    <!-- Overlay móvil -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-20 md:hidden hidden" onclick="closeSidebar()"></div>
-
-    <!-- Main -->
-    <main class="flex-1 min-w-0 px-4 sm:px-6 py-6 md:py-8">
-
-      <!-- HOME -->
-      <section id="panel-home" class="tool-panel active">
-        <div class="mb-8">
-          <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Panel de herramientas</h1>
-          <p class="mt-2 text-steel max-w-2xl text-sm sm:text-base">Utilidades de privacidad de uso local. Misma base visual que el resto de proyectos, orientada a trabajo práctico.</p>
+    <!-- PASSWORDS -->
+    <section id="panel-passwords" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Generador de contraseñas</h1>
+        <p class="text-steel leading-relaxed mb-4">
+          Genera contraseñas con el generador criptográfico del navegador (<code class="text-neon/90 text-sm">crypto.getRandomValues</code>).
+          Nada se almacena ni se envía. Una contraseña fuerte es larga, aleatoria y única por servicio.
+        </p>
+        <div class="p-4 rounded-xl bg-panel border border-white/5 text-sm text-steel space-y-2">
+          <p><strong class="text-mist">Tiempo aproximado de rotura (fuerza bruta offline, GPU moderna):</strong></p>
+          <ul class="list-disc list-inside space-y-1 text-steel/90">
+            <li>8 caracteres solo minúsculas → segundos o minutos</li>
+            <li>10 caracteres mixtos → horas / días</li>
+            <li>14+ caracteres con mayúsculas, números y símbolos → siglos en la práctica</li>
+            <li>20+ caracteres bien generados → prácticamente inviable por fuerza bruta</li>
+          </ul>
+          <p class="pt-2">Usa un <strong class="text-mist">gestor de contraseñas</strong> (Bitwarden, Proton Pass, KeePassXC…). Así puedes tener una contraseña distinta y larga en cada sitio sin memorizarlas.</p>
         </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <button onclick="showTool('nombres')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-            <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4 group-hover:bg-neon/20 transition">
-              <svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <h2 class="font-semibold text-white mb-1">Generador de nombres</h2>
-            <p class="text-sm text-steel">Alias y nombres de usuario aleatorios para perfiles anónimos.</p>
-          </button>
-          <button onclick="showTool('passwords')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-            <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4 group-hover:bg-neon/20 transition">
-              <svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </div>
-            <h2 class="font-semibold text-white mb-1">Generador de contraseñas</h2>
-            <p class="text-sm text-steel">Contraseñas fuertes generadas con el generador criptográfico del navegador.</p>
-          </button>
-          <button onclick="showTool('hibp')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-            <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4 group-hover:bg-neon/20 transition">
-              <svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <h2 class="font-semibold text-white mb-1">Contraseñas filtradas</h2>
-            <p class="text-sm text-steel">Comprueba filtraciones con Have I Been Pwned (k-anonymity).</p>
-          </button>
-          <button onclick="showTool('metadatos')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-            <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4 group-hover:bg-neon/20 transition">
-              <svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-            </div>
-            <h2 class="font-semibold text-white mb-1">Limpiador de metadatos</h2>
-            <p class="text-sm text-steel">Elimina EXIF y datos ocultos de imágenes en el propio navegador.</p>
-          </button>
-          <button onclick="showTool('acortador')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-            <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4 group-hover:bg-neon/20 transition">
-              <svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            </div>
-            <h2 class="font-semibold text-white mb-1">Acortador de enlaces</h2>
-            <p class="text-sm text-steel">Acorta URLs mediante un servicio público (con aviso de privacidad).</p>
-          </button>
-          <button onclick="showTool('compresor')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-            <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4 group-hover:bg-neon/20 transition">
-              <svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-            </div>
-            <h2 class="font-semibold text-white mb-1">Compresor</h2>
-            <p class="text-sm text-steel">Reduce el tamaño de imágenes re-exportándolas con menor calidad.</p>
-          </button>
-          <button onclick="showTool('convertidor')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition sm:col-span-2 lg:col-span-1">
-            <div class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/20 flex items-center justify-center mb-4 group-hover:bg-neon/20 transition">
-              <svg class="w-5 h-5 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-            </div>
-            <h2 class="font-semibold text-white mb-1">Convertidor</h2>
-            <p class="text-sm text-steel">Convierte imágenes entre PNG, JPEG y WebP sin subirlas a ningún servidor.</p>
-          </button>
-        </div>
-      </section>
-
-      <!-- NOMBRES -->
-      <section id="panel-nombres" class="tool-panel">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-white">Generador de nombres</h1>
-          <p class="text-steel text-sm mt-1">Crea alias aleatorios para cuentas y perfiles. Todo local.</p>
-        </div>
-        <div class="p-5 sm:p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
-          <div class="flex flex-wrap gap-4">
-            <label class="flex items-center gap-2 text-sm"><input type="radio" name="nameStyle" value="es" checked class="accent-neon"> Español</label>
-            <label class="flex items-center gap-2 text-sm"><input type="radio" name="nameStyle" value="en" class="accent-neon"> Inglés</label>
-            <label class="flex items-center gap-2 text-sm"><input type="radio" name="nameStyle" value="mix" class="accent-neon"> Mixto</label>
-          </div>
-          <div class="flex items-center gap-3">
-            <label class="text-sm text-steel">Cantidad</label>
-            <input type="number" id="nameCount" value="5" min="1" max="20" class="w-20 bg-void border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-neon/50">
-          </div>
-          <button onclick="generateNames()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Generar</button>
-          <div id="nameResults" class="space-y-2 result-box text-sm"></div>
-        </div>
-      </section>
-
-      <!-- PASSWORDS -->
-      <section id="panel-passwords" class="tool-panel">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-white">Generador de contraseñas</h1>
-          <p class="text-steel text-sm mt-1">Usa <code class="text-neon/80">crypto.getRandomValues</code>. No se almacena ni se envía nada.</p>
-        </div>
-        <div class="p-5 sm:p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
+      </div>
+      <div class="grid lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-2 space-y-5 p-6 rounded-2xl bg-panel border border-white/5">
           <div>
-            <div class="flex justify-between text-sm mb-2"><span class="text-steel">Longitud</span><span id="pwdLenLabel" class="text-white font-medium">20</span></div>
-            <input type="range" id="pwdLen" min="8" max="64" value="20" class="w-full" oninput="document.getElementById('pwdLenLabel').textContent=this.value">
+            <div class="flex justify-between text-sm mb-2"><span class="text-steel">Longitud</span><span id="pwdLenLabel" class="text-white font-medium">24</span></div>
+            <input type="range" id="pwdLen" min="12" max="64" value="24" class="w-full" oninput="document.getElementById('pwdLenLabel').textContent=this.value">
           </div>
           <div class="grid grid-cols-2 gap-3 text-sm">
             <label class="flex items-center gap-2"><input type="checkbox" id="pwdUpper" checked class="accent-neon"> Mayúsculas</label>
@@ -221,88 +217,177 @@
             <label class="flex items-center gap-2"><input type="checkbox" id="pwdNum" checked class="accent-neon"> Números</label>
             <label class="flex items-center gap-2"><input type="checkbox" id="pwdSym" checked class="accent-neon"> Símbolos</label>
           </div>
-          <button onclick="generatePassword()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Generar</button>
+          <button id="pwdBtn" onclick="generatePassword()" class="w-full px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Generar</button>
+        </div>
+        <div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+          <p class="text-xs text-steel uppercase tracking-wider">Contraseña</p>
           <div class="flex gap-2">
-            <input type="text" id="pwdOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white focus:outline-none" placeholder="La contraseña aparecerá aquí">
-            <button onclick="copyText('pwdOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel hover:text-white hover:border-neon/40 transition">Copiar</button>
+            <input type="text" id="pwdOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white focus:outline-none" placeholder="Se generará aquí">
+            <button onclick="copyText('pwdOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel hover:text-white hover:border-neon/40 transition shrink-0">Copiar</button>
           </div>
+          <p id="pwdEntropy" class="text-sm text-steel"></p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- HIBP -->
-      <section id="panel-hibp" class="tool-panel">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-white">Comprobador de contraseñas filtradas</h1>
-          <p class="text-steel text-sm mt-1">API de Have I Been Pwned con k-anonymity: solo se envían los 5 primeros caracteres del hash SHA-1.</p>
+    <!-- FILTRACIONES EMAIL HUB -->
+    <section id="panel-filtraciones" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Centro de filtraciones de correo</h1>
+        <p class="text-steel leading-relaxed">
+          Un solo lugar para entender qué significa que un correo aparezca en una filtración, de dónde sale esa información y qué medidas tomar.
+          El objetivo es que no necesites saltar entre media docena de webs para formarte una idea clara.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-6 mb-8">
+        <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+          <h2 class="text-white font-semibold">Consulta orientativa</h2>
+          <p class="text-sm text-steel">Introduce un correo para ver la estructura de una respuesta típica y los consejos aplicables. Las bases de filtraciones reales (como Have I Been Pwned) exigen API key para consultas completas por email; aquí el valor principal es el contexto y las acciones recomendadas.</p>
+          <input type="email" id="breachEmail" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50" placeholder="tu@correo.com">
+          <button onclick="runBreachHub()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Analizar contexto</button>
+          <div id="breachLive" class="text-sm hidden"></div>
         </div>
-        <div class="p-5 sm:p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
-          <div>
-            <label class="block text-sm text-steel mb-2">Contraseña a comprobar</label>
-            <input type="password" id="hibpInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50" placeholder="Escribe o pega la contraseña">
+        <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-3">
+          <h2 class="text-white font-semibold">De dónde se obtiene la información</h2>
+          <ul class="text-sm text-steel space-y-2 list-disc list-inside">
+            <li><strong class="text-mist">Have I Been Pwned</strong> y bases agregadas similares: recopilan dumps públicos y filtraciones confirmadas.</li>
+            <li>Investigadores y periodistas que publican análisis de brechas corporativas.</li>
+            <li>Mercados clandestinos (donde se venden dumps; las bases legítimas solo indexan lo ya filtrado).</li>
+            <li>Nunca introduces tu contraseña en un comprobador de filtraciones de correo: el identificador es el email.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4 mb-8">
+        <div class="p-5 rounded-2xl bg-panel border border-white/5">
+          <h3 class="text-white font-medium mb-2 text-sm">Qué suele filtrarse</h3>
+          <p class="text-sm text-steel leading-relaxed">Email, contraseñas (a veces en claro o hasheadas), nombres, teléfonos, direcciones, fechas de nacimiento, IPs, historial de compras o preferencias. Cada filtración es distinta.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-panel border border-white/5">
+          <h3 class="text-white font-medium mb-2 text-sm">Qué hacer si estás afectado</h3>
+          <p class="text-sm text-steel leading-relaxed">Cambia la contraseña de ese servicio y de cualquier otro donde la reutilizaras. Activa 2FA. Revisa actividad reciente. Considera un gestor de contraseñas y un correo distinto por categorías de riesgo.</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-panel border border-white/5">
+          <h3 class="text-white font-medium mb-2 text-sm">Prevención continua</h3>
+          <p class="text-sm text-steel leading-relaxed">Contraseñas únicas y largas. 2FA (preferible app o hardware, no SMS). Alias de correo cuando el servicio lo permita. Menos cuentas = menor superficie.</p>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-panel border border-white/5 edu-box">
+        <h3 class="text-white font-semibold mb-3">Resumen accionable</h3>
+        <ol class="text-sm text-steel space-y-2 list-decimal list-inside leading-relaxed">
+          <li>Si un servicio te notifica una brecha, cambia la contraseña de inmediato y en todos los sitios donde la hubieras reutilizado.</li>
+          <li>Activa autenticación en dos factores en correo, banca y redes principales.</li>
+          <li>Usa un gestor: una contraseña maestra fuerte + el resto generadas y únicas.</li>
+          <li>No reutilices el mismo correo+contraseña en sitios de bajo valor y de alto valor.</li>
+          <li>Revisa periódicamente alertas de filtración de servicios de confianza; no subas tus contraseñas a comprobadores dudosos.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- METADATOS -->
+    <section id="panel-metadatos" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Limpiador de metadatos</h1>
+        <p class="text-steel leading-relaxed mb-4">
+          Las fotos de tu teléfono o cámara llevan datos EXIF: fecha, modelo de dispositivo, a veces coordenadas GPS exactas del lugar donde se tomó la imagen (tu casa, trabajo, vacaciones).
+          Al publicar o enviar una foto «tal cual», puedes estar revelando ubicación y más. Esta herramienta re-exporta la imagen en el navegador y elimina esa capa de metadatos.
+        </p>
+        <div class="p-4 rounded-xl bg-panel border border-white/5 text-sm text-steel">
+          <strong class="text-mist">Qué se elimina habitualmente:</strong> GPS, fecha original, software, número de serie de cámara, orientación y otros campos EXIF/IPTC. El contenido visual se mantiene; se genera un nuevo archivo limpio.
+        </div>
+      </div>
+      <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-2xl space-y-5">
+        <input type="file" id="metaFile" accept="image/*" class="block w-full text-sm text-steel file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon file:text-sm file:font-medium hover:file:bg-neon/25">
+        <button id="metaBtn" onclick="stripMetadata()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Eliminar metadatos</button>
+        <div id="metaProgressWrap" class="hidden space-y-2">
+          <div class="progress-track"><div id="metaProgress" class="progress-bar"></div></div>
+          <p id="metaStatus" class="text-sm text-steel">Procesando…</p>
+        </div>
+        <div id="metaDownloadWrap" class="hidden">
+          <button id="metaDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm font-medium hover:bg-neon/10 transition">Descargar imagen limpia</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACORTADOR / IDs LOCALES -->
+    <section id="panel-acortador" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Identificadores cortos (offline)</h1>
+        <p class="text-steel leading-relaxed mb-4">
+          Los acortadores públicos (is.gd, bit.ly, etc.) reciben la URL completa en sus servidores. Además, desde una página estática el navegador bloquea muchas de esas peticiones por CORS: por eso veías el error de red.
+          Aquí generamos códigos cortos <strong class="text-mist">solo en tu equipo</strong>. Útiles para etiquetar notas, referencias internas o recordatorios. No sustituyen a un acortador público (eso requiere un servidor propio).
+        </p>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+          <label class="block text-sm text-steel">Texto o URL de referencia (opcional)</label>
+          <input type="text" id="shortInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50" placeholder="https://… o cualquier etiqueta">
+          <button onclick="generateShortId()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Generar identificador</button>
+        </div>
+        <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-3">
+          <p class="text-xs text-steel uppercase tracking-wider">Código</p>
+          <div class="flex gap-2 items-center">
+            <span id="shortOutput" class="text-xl font-semibold text-white result-box">—</span>
+            <button onclick="copyPlain('shortOutput')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel hover:text-white transition">Copiar</button>
           </div>
-          <button onclick="checkHIBP()" id="hibpBtn" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Comprobar</button>
-          <div id="hibpResult" class="text-sm leading-relaxed hidden"></div>
+          <p id="shortStatus" class="text-sm text-steel">El mapeo se guarda solo en este navegador (localStorage) si indicas una referencia.</p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- METADATOS -->
-      <section id="panel-metadatos" class="tool-panel">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-white">Limpiador de metadatos</h1>
-          <p class="text-steel text-sm mt-1">Re-exporta la imagen mediante canvas y elimina EXIF/GPS y la mayoría de metadatos. Solo imágenes.</p>
+    <!-- COMPRESOR -->
+    <section id="panel-compresor" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Compresor de imágenes</h1>
+        <p class="text-steel leading-relaxed mb-4">
+          Reduce el peso re-exportando la imagen como JPEG con la calidad que elijas. Es compresión con pérdida: a menor calidad, menor tamaño y más degradación visual.
+          Útil para adjuntos, webs o mensajería. Todo ocurre en tu dispositivo; el original no se modifica hasta que descargas el resultado.
+        </p>
+        <div class="p-4 rounded-xl bg-panel border border-white/5 text-sm text-steel">
+          <strong class="text-mist">Orientación:</strong> 0.9–1.0 casi sin pérdida visible · 0.7–0.8 buen equilibrio · 0.4–0.6 agresivo (previsualiza si es crítico).
         </div>
-        <div class="p-5 sm:p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
-          <input type="file" id="metaFile" accept="image/*" class="block w-full text-sm text-steel file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon file:text-sm file:font-medium hover:file:bg-neon/25">
-          <button onclick="stripMetadata()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Limpiar y descargar</button>
-          <p id="metaStatus" class="text-sm text-steel"></p>
+      </div>
+      <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-2xl space-y-5">
+        <input type="file" id="compFile" accept="image/*" class="block w-full text-sm text-steel file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon file:text-sm file:font-medium hover:file:bg-neon/25">
+        <div>
+          <div class="flex justify-between text-sm mb-2"><span class="text-steel">Calidad</span><span id="compQualLabel" class="text-white font-medium">0.75</span></div>
+          <input type="range" id="compQual" min="0.2" max="1" step="0.05" value="0.75" class="w-full" oninput="document.getElementById('compQualLabel').textContent=this.value">
         </div>
-      </section>
+        <button id="compBtn" onclick="compressImage()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Comprimir</button>
+        <div id="compProgressWrap" class="hidden space-y-2">
+          <div class="progress-track"><div id="compProgress" class="progress-bar"></div></div>
+          <p id="compStatus" class="text-sm text-steel">Comprimiendo…</p>
+        </div>
+        <div id="compDownloadWrap" class="hidden">
+          <button id="compDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm font-medium hover:bg-neon/10 transition">Descargar imagen comprimida</button>
+        </div>
+      </div>
+    </section>
 
-      <!-- ACORTADOR -->
-      <section id="panel-acortador" class="tool-panel">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-white">Acortador de enlaces</h1>
-          <p class="text-steel text-sm mt-1">Utiliza la API pública de is.gd. El enlace largo se envía a ese servicio. Para máxima privacidad usa un acortador autoalojado.</p>
+    <!-- CONVERTIDOR -->
+    <section id="panel-convertidor" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Convertidor</h1>
+        <p class="text-steel leading-relaxed mb-4">
+          Elige el tipo de archivo. De momento la conversión completa offline está disponible para <strong class="text-mist">imágenes</strong> (PNG, JPEG, WebP).
+          PDF, vídeo y documentos de oficina requieren librerías pesadas o un servidor; se irán añadiendo de forma selectiva y siempre priorizando el procesamiento local.
+        </p>
+        <p class="text-sm text-neon/90">Una vez cargada la página, la conversión de imágenes no necesita internet.</p>
+      </div>
+      <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-2xl space-y-5">
+        <div>
+          <label class="block text-sm text-steel mb-2">Tipo de archivo</label>
+          <select id="convType" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50" onchange="onConvTypeChange()">
+            <option value="image">Imágenes (PNG / JPEG / WebP)</option>
+            <option value="pdf">PDF (próximamente — priorizar local)</option>
+            <option value="video">Vídeo (limitado en navegador)</option>
+            <option value="doc">Documentos (docx, etc.)</option>
+          </select>
         </div>
-        <div class="p-5 sm:p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
-          <div>
-            <label class="block text-sm text-steel mb-2">URL larga</label>
-            <input type="url" id="shortInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50" placeholder="https://...">
-          </div>
-          <button onclick="shortenUrl()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Acortar</button>
-          <div class="flex gap-2">
-            <input type="text" id="shortOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white focus:outline-none" placeholder="Enlace corto">
-            <button onclick="copyText('shortOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel hover:text-white hover:border-neon/40 transition">Copiar</button>
-          </div>
-          <p id="shortStatus" class="text-sm text-steel"></p>
-        </div>
-      </section>
-
-      <!-- COMPRESOR -->
-      <section id="panel-compresor" class="tool-panel">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-white">Compresor de imágenes</h1>
-          <p class="text-steel text-sm mt-1">Reduce peso re-exportando con menor calidad JPEG. Procesamiento local.</p>
-        </div>
-        <div class="p-5 sm:p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
-          <input type="file" id="compFile" accept="image/*" class="block w-full text-sm text-steel file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon file:text-sm file:font-medium hover:file:bg-neon/25">
-          <div>
-            <div class="flex justify-between text-sm mb-2"><span class="text-steel">Calidad JPEG</span><span id="compQualLabel" class="text-white font-medium">0.7</span></div>
-            <input type="range" id="compQual" min="0.1" max="1" step="0.05" value="0.7" class="w-full" oninput="document.getElementById('compQualLabel').textContent=this.value">
-          </div>
-          <button onclick="compressImage()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Comprimir y descargar</button>
-          <p id="compStatus" class="text-sm text-steel"></p>
-        </div>
-      </section>
-
-      <!-- CONVERTIDOR -->
-      <section id="panel-convertidor" class="tool-panel">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-white">Convertidor de imágenes</h1>
-          <p class="text-steel text-sm mt-1">PNG ↔ JPEG ↔ WebP en el navegador.</p>
-        </div>
-        <div class="p-5 sm:p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
-          <input type="file" id="convFile" accept="image/*" class="block w-full text-sm text-steel file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon file:text-sm file:font-medium hover:file:bg-neon/25">
+        <div id="convImageControls" class="space-y-4">
+          <input type="file" id="convFile" accept="image/*" class="block w-full text-sm text-steel file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon file:text-sm file:font-medium hover:file:bg-neon/25">
           <div>
             <label class="block text-sm text-steel mb-2">Formato de salida</label>
             <select id="convFormat" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50">
@@ -311,18 +396,73 @@
               <option value="image/webp">WebP</option>
             </select>
           </div>
-          <button onclick="convertImage()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Convertir y descargar</button>
-          <p id="convStatus" class="text-sm text-steel"></p>
+          <button onclick="convertImage()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Convertir</button>
+          <div id="convProgressWrap" class="hidden space-y-2">
+            <div class="progress-track"><div id="convProgress" class="progress-bar"></div></div>
+            <p id="convStatus" class="text-sm text-steel">Convirtiendo…</p>
+          </div>
+          <div id="convDownloadWrap" class="hidden">
+            <button id="convDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm font-medium hover:bg-neon/10 transition">Descargar archivo</button>
+          </div>
         </div>
-      </section>
+        <div id="convOtherMsg" class="hidden text-sm text-steel leading-relaxed">
+          Esta categoría aún no está implementada de forma local. Cuando se añada, se hará con el mismo criterio: procesamiento en el navegador siempre que sea viable.
+        </div>
+      </div>
+    </section>
 
-    </main>
-  </div>
+    <!-- HASHES -->
+    <section id="panel-hashes" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Calculadora de hashes</h1>
+        <p class="text-steel leading-relaxed">
+          Calcula huellas digitales de un archivo o de un texto. Sirve para comprobar integridad (¿este archivo es el mismo que descargué?) sin subir nada a ningún sitio.
+          SHA-256 es el más recomendado hoy; SHA-1 y MD5 siguen usándose en contextos legacy pero ya no se consideran seguros frente a colisiones.
+        </p>
+      </div>
+      <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-2xl space-y-5">
+        <div class="flex gap-4 text-sm">
+          <label class="flex items-center gap-2"><input type="radio" name="hashSrc" value="file" checked class="accent-neon" onchange="toggleHashSrc()"> Archivo</label>
+          <label class="flex items-center gap-2"><input type="radio" name="hashSrc" value="text" class="accent-neon" onchange="toggleHashSrc()"> Texto</label>
+        </div>
+        <input type="file" id="hashFile" class="block w-full text-sm text-steel file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon file:text-sm file:font-medium">
+        <textarea id="hashText" class="hidden w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon/50" placeholder="Texto a hashear"></textarea>
+        <button onclick="computeHashes()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Calcular</button>
+        <div id="hashResults" class="space-y-3 text-sm result-box hidden"></div>
+      </div>
+    </section>
+
+    <!-- PASSPHRASES -->
+    <section id="panel-passphrases" class="tool-panel">
+      <div class="mb-8 max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white mb-3">Frases de paso</h1>
+        <p class="text-steel leading-relaxed">
+          Una frase de varias palabras aleatorias (estilo diceware) suele ser más fácil de memorizar que una cadena de símbolos y, con suficientes palabras, igual o más fuerte.
+          Ideal como contraseña maestra de un gestor o para cifrado local. Generada aquí con aleatoriedad del navegador.
+        </p>
+      </div>
+      <div class="grid lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-2 p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+          <div>
+            <div class="flex justify-between text-sm mb-2"><span class="text-steel">Número de palabras</span><span id="ppCountLabel" class="text-white font-medium">6</span></div>
+            <input type="range" id="ppCount" min="4" max="10" value="6" class="w-full" oninput="document.getElementById('ppCountLabel').textContent=this.value">
+          </div>
+          <button id="ppBtn" onclick="generatePassphrase()" class="w-full px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow transition">Generar</button>
+        </div>
+        <div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 space-y-3">
+          <p class="text-xs text-steel uppercase tracking-wider">Frase</p>
+          <p id="ppResult" class="text-xl text-white result-box break-words">—</p>
+          <button onclick="copyPlain('ppResult')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel hover:text-white transition">Copiar</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <footer class="border-t border-white/5 py-8 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-steel">
-      <p>© 2026 Privacidad Tools · Stark Privacy</p>
-      <p class="flex gap-4">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-steel">
+      <p>© 2026 Privacidad Tools · Stark Privacy · Procesamiento local</p>
+      <p class="flex flex-wrap gap-4 justify-center">
         <a href="https://starkprivacy.github.io/privacidad/" class="hover:text-mist transition">privacidad.me</a>
         <a href="https://github.com/StarkPrivacy/privacidad-tools" class="hover:text-mist transition">GitHub</a>
         <a href="https://boringprivacy.io" class="hover:text-mist transition">Academia</a>
@@ -332,55 +472,35 @@
 
   <script>
     // ——— Navegación ———
-    const panels = document.querySelectorAll('.tool-panel');
-    const navItems = document.querySelectorAll('.nav-item');
-
     function showTool(id) {
-      panels.forEach(p => p.classList.remove('active'));
-      navItems.forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
       const panel = document.getElementById('panel-' + id);
       if (panel) panel.classList.add('active');
-      const nav = document.querySelector(`[data-tool="${id}"]`);
-      if (nav) nav.classList.add('active');
-      closeSidebar();
+      document.getElementById('mobileTools').classList.add('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    navItems.forEach(btn => {
-      btn.addEventListener('click', () => showTool(btn.dataset.tool));
+    document.getElementById('mobileToolsBtn').addEventListener('click', () => {
+      document.getElementById('mobileTools').classList.toggle('hidden');
     });
 
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-
-    mobileMenuBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('-translate-x-full');
-      overlay.classList.toggle('hidden');
-    });
-
-    function closeSidebar() {
-      sidebar.classList.add('-translate-x-full');
-      overlay.classList.add('hidden');
-    }
-
-    // ——— Utilidades ———
     function copyText(id) {
       const el = document.getElementById(id);
       if (!el || !el.value) return;
-      navigator.clipboard.writeText(el.value).then(() => {
-        // feedback mínimo
-      });
+      navigator.clipboard.writeText(el.value);
     }
-
+    function copyPlain(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const t = el.textContent.trim();
+      if (t && t !== '—') navigator.clipboard.writeText(t);
+    }
     function downloadBlob(blob, filename) {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = filename;
       a.click();
-      URL.revokeObjectURL(a.href);
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     }
-
     function loadImage(file) {
       return new Promise((resolve, reject) => {
         const img = new Image();
@@ -389,38 +509,54 @@
         img.src = URL.createObjectURL(file);
       });
     }
-
-    // ——— Generador de nombres ———
-    const adjEs = ['silencioso','oculto','libre','sombra','nocturno','criptico','anonimo','veloz','seguro','privado','gris','nube','zorro','lobo','cuervo'];
-    const nounEs = ['viajero','guardian','fantasma','nodo','relay','cifrado','clave','proxy','torre','oasis','mapa','camino','horizonte','refugio','codigo'];
-    const adjEn = ['silent','hidden','free','shadow','night','cryptic','anon','swift','secure','private','gray','cloud','fox','wolf','raven'];
-    const nounEn = ['traveler','guardian','ghost','node','relay','cipher','key','proxy','tower','oasis','map','path','horizon','refuge','code'];
-
-    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-    function generateNames() {
-      const style = document.querySelector('input[name="nameStyle"]:checked').value;
-      const count = Math.min(20, Math.max(1, parseInt(document.getElementById('nameCount').value, 10) || 5));
-      const out = document.getElementById('nameResults');
-      out.innerHTML = '';
-      for (let i = 0; i < count; i++) {
-        let a, n;
-        if (style === 'es') { a = pick(adjEs); n = pick(nounEs); }
-        else if (style === 'en') { a = pick(adjEn); n = pick(nounEn); }
-        else {
-          a = Math.random() > 0.5 ? pick(adjEs) : pick(adjEn);
-          n = Math.random() > 0.5 ? pick(nounEs) : pick(nounEn);
-        }
-        const num = Math.floor(Math.random() * 90) + 10;
-        const name = `${a}_${n}${num}`;
-        const row = document.createElement('div');
-        row.className = 'flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-void border border-white/5';
-        row.innerHTML = `<span class="text-white">${name}</span><button class="text-xs text-neon hover:underline" onclick="navigator.clipboard.writeText('${name}')">Copiar</button>`;
-        out.appendChild(row);
-      }
+    function animateProgress(barId, duration, onDone) {
+      const bar = document.getElementById(barId);
+      let p = 0;
+      bar.style.width = '0%';
+      const step = 100 / (duration / 30);
+      const t = setInterval(() => {
+        p = Math.min(100, p + step + Math.random() * 4);
+        bar.style.width = p + '%';
+        if (p >= 100) { clearInterval(t); if (onDone) onDone(); }
+      }, 30);
     }
 
-    // ——— Generador de contraseñas ———
+    // ——— Nombres (estilos distintos) ———
+    const adj = ['silencioso','oculto','libre','nocturno','criptico','gris','nube','zorro','cuervo','veloz','seguro','privado','aereo','lejano','frio'];
+    const noun = ['viajero','guardian','fantasma','nodo','relay','cifrado','proxy','torre','oasis','horizonte','refugio','codigo','mapa','sendero','eco'];
+    const animals = ['lobo','cuervo','zorro','halcon','lince','orca','bisonte','ciervo','buho','zorro'];
+    const places = ['norte','valle','risco','niebla','costa','páramo','sierra','delta','bosque','abismo'];
+    const syllables = ['ka','zu','ri','mo','ne','xa','lu','qi','vo','ta','sh','br','cl','dr'];
+
+    function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+    function randHex(n) {
+      const a = new Uint8Array(n);
+      crypto.getRandomValues(a);
+      return Array.from(a, b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    function generateName() {
+      let style = document.getElementById('nameStyle').value;
+      if (style === 'aleatorio') {
+        style = pick(['sombra','tecnico','natural','corto','hex']);
+      }
+      let name = '';
+      if (style === 'sombra') {
+        name = pick(adj) + '_' + pick(noun) + (10 + Math.floor(Math.random()*89));
+      } else if (style === 'tecnico') {
+        name = pick(syllables) + pick(syllables) + pick(syllables) + '_' + randHex(2);
+      } else if (style === 'natural') {
+        name = pick(animals) + '-' + pick(places) + (Math.floor(Math.random()*90)+10);
+      } else if (style === 'corto') {
+        name = pick(syllables) + pick(syllables) + pick(['','x','z','k']) + (Math.floor(Math.random()*9)+1);
+      } else {
+        name = 'id_' + randHex(4);
+      }
+      document.getElementById('nameResult').textContent = name;
+      document.getElementById('nameBtn').textContent = 'Re-generar';
+    }
+
+    // ——— Contraseñas ———
     function generatePassword() {
       const len = parseInt(document.getElementById('pwdLen').value, 10);
       let chars = '';
@@ -428,156 +564,216 @@
       if (document.getElementById('pwdLower').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
       if (document.getElementById('pwdNum').checked) chars += '0123456789';
       if (document.getElementById('pwdSym').checked) chars += '!@#$%^&*()-_=+[]{}|;:,.<>?';
-      if (!chars) { alert('Selecciona al menos un conjunto de caracteres.'); return; }
+      if (!chars) { alert('Selecciona al menos un conjunto.'); return; }
       const arr = new Uint32Array(len);
       crypto.getRandomValues(arr);
       let pwd = '';
       for (let i = 0; i < len; i++) pwd += chars[arr[i] % chars.length];
       document.getElementById('pwdOutput').value = pwd;
+      document.getElementById('pwdBtn').textContent = 'Re-generar';
+      const entropy = Math.floor(len * Math.log2(chars.length));
+      let strength = 'débil';
+      if (entropy >= 80) strength = 'muy fuerte';
+      else if (entropy >= 60) strength = 'fuerte';
+      else if (entropy >= 40) strength = 'aceptable';
+      document.getElementById('pwdEntropy').textContent = `Entropía estimada ≈ ${entropy} bits · ${strength}. Usa un gestor y no reutilices esta contraseña.`;
     }
 
-    // ——— HIBP ———
-    async function sha1(str) {
-      const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-    }
-
-    async function checkHIBP() {
-      const pwd = document.getElementById('hibpInput').value;
-      const result = document.getElementById('hibpResult');
-      const btn = document.getElementById('hibpBtn');
-      if (!pwd) { result.classList.remove('hidden'); result.innerHTML = '<span class="text-steel">Introduce una contraseña.</span>'; return; }
-      btn.disabled = true; btn.textContent = 'Comprobando…';
-      try {
-        const hash = await sha1(pwd);
-        const prefix = hash.slice(0, 5);
-        const suffix = hash.slice(5);
-        const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
-          headers: { 'Add-Padding': 'true' }
-        });
-        if (!res.ok) throw new Error('Respuesta no válida');
-        const text = await res.text();
-        const lines = text.split('\n');
-        let count = 0;
-        for (const line of lines) {
-          const [suf, c] = line.trim().split(':');
-          if (suf === suffix) { count = parseInt(c, 10); break; }
-        }
-        result.classList.remove('hidden');
-        if (count > 0) {
-          result.innerHTML = `<span class="text-red-400 font-medium">Aparece en filtraciones.</span> Se ha visto aproximadamente <strong class="text-white">${count.toLocaleString('es')}</strong> veces. Cámbiala cuanto antes.`;
-        } else {
-          result.innerHTML = `<span class="text-green-400 font-medium">No aparece en las bases de HIBP.</span> Eso no garantiza que sea segura; sigue usando contraseñas largas y únicas.`;
-        }
-      } catch (e) {
-        result.classList.remove('hidden');
-        result.innerHTML = `<span class="text-red-400">Error al consultar: ${e.message}</span>`;
-      } finally {
-        btn.disabled = false; btn.textContent = 'Comprobar';
+    // ——— Hub filtraciones ———
+    function runBreachHub() {
+      const email = document.getElementById('breachEmail').value.trim();
+      const box = document.getElementById('breachLive');
+      box.classList.remove('hidden');
+      if (!email || !email.includes('@')) {
+        box.innerHTML = '<p class="text-steel">Introduce un correo válido para ver el contexto aplicable.</p>';
+        return;
       }
+      const domain = email.split('@')[1] || '';
+      box.innerHTML = `
+        <div class="mt-3 p-4 rounded-xl bg-void border border-white/10 space-y-2">
+          <p class="text-mist font-medium">Contexto para <span class="text-white">${email.replace(/</g,'')}</span></p>
+          <p class="text-steel text-sm">Dominio: <span class="text-white">${domain}</span></p>
+          <p class="text-steel text-sm">En una consulta real a bases agregadas verías: lista de filtraciones conocidas, fecha aproximada, tipos de datos expuestos (email, hash de contraseña, teléfono, etc.) y a veces el nombre del incidente.</p>
+          <p class="text-steel text-sm"><strong class="text-mist">Acción inmediata recomendada:</strong> si sospechas exposición, cambia contraseñas reutilizadas, activa 2FA en el correo y en servicios críticos, y revisa sesiones activas.</p>
+          <p class="text-xs text-steel/80 pt-1">Para comprobaciones en vivo con datos de HIBP se requiere su API (política del servicio). Este hub prioriza comprensión y respuesta práctica sin depender de claves.</p>
+        </div>`;
     }
 
     // ——— Metadatos ———
+    let metaBlob = null;
+    let metaName = '';
     async function stripMetadata() {
       const input = document.getElementById('metaFile');
-      const status = document.getElementById('metaStatus');
-      if (!input.files || !input.files[0]) { status.textContent = 'Selecciona una imagen.'; return; }
+      if (!input.files || !input.files[0]) return;
       const file = input.files[0];
-      status.textContent = 'Procesando…';
+      document.getElementById('metaProgressWrap').classList.remove('hidden');
+      document.getElementById('metaDownloadWrap').classList.add('hidden');
+      document.getElementById('metaStatus').textContent = 'Eliminando metadatos…';
+      document.getElementById('metaBtn').disabled = true;
+      animateProgress('metaProgress', 600);
       try {
         const img = await loadImage(file);
         const canvas = document.createElement('canvas');
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        await new Promise(r => setTimeout(r, 500));
         canvas.toBlob(blob => {
-          if (!blob) { status.textContent = 'No se pudo generar el archivo.'; return; }
-          const name = file.name.replace(/\.[^.]+$/, '') + '_sin_meta.png';
-          downloadBlob(blob, name);
-          status.textContent = `Descargado: ${name} (${(blob.size/1024).toFixed(1)} KB). Metadatos EXIF eliminados por re-exportación.`;
+          metaBlob = blob;
+          metaName = file.name.replace(/\.[^.]+$/, '') + '_sin_meta.png';
+          document.getElementById('metaProgress').style.width = '100%';
+          document.getElementById('metaStatus').textContent = 'Listo. Puedes descargar la imagen limpia.';
+          document.getElementById('metaDownloadWrap').classList.remove('hidden');
+          document.getElementById('metaBtn').disabled = false;
         }, 'image/png');
       } catch (e) {
-        status.textContent = 'Error: ' + e.message;
+        document.getElementById('metaStatus').textContent = 'Error: ' + e.message;
+        document.getElementById('metaBtn').disabled = false;
       }
     }
+    document.getElementById('metaDownloadBtn').addEventListener('click', () => {
+      if (metaBlob) downloadBlob(metaBlob, metaName);
+    });
 
-    // ——— Acortador ———
-    async function shortenUrl() {
-      const url = document.getElementById('shortInput').value.trim();
-      const status = document.getElementById('shortStatus');
-      const out = document.getElementById('shortOutput');
-      if (!url) { status.textContent = 'Introduce una URL.'; return; }
-      status.textContent = 'Acortando…';
-      out.value = '';
-      try {
-        const res = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        if (data.shorturl) {
-          out.value = data.shorturl;
-          status.textContent = 'Listo. Recuerda que el servicio is.gd recibe la URL original.';
-        } else {
-          status.textContent = data.errormessage || 'No se pudo acortar.';
+    // ——— Short ID offline ———
+    function generateShortId() {
+      const ref = document.getElementById('shortInput').value.trim();
+      const id = randHex(3) + '-' + pick(['a','k','m','x','z']) + (Math.floor(Math.random()*900)+100);
+      document.getElementById('shortOutput').textContent = id;
+      if (ref) {
+        try {
+          const map = JSON.parse(localStorage.getItem('priv_short_map') || '{}');
+          map[id] = ref;
+          localStorage.setItem('priv_short_map', JSON.stringify(map));
+          document.getElementById('shortStatus').textContent = 'Guardado en este navegador: ' + id + ' → ' + ref.slice(0, 60) + (ref.length > 60 ? '…' : '');
+        } catch (_) {
+          document.getElementById('shortStatus').textContent = 'Identificador generado (sin persistencia).';
         }
-      } catch (e) {
-        status.textContent = 'Error de red o CORS. Prueba otro servicio o un acortador propio.';
+      } else {
+        document.getElementById('shortStatus').textContent = 'Identificador local generado. No se ha enviado a ningún servidor.';
       }
     }
 
     // ——— Compresor ———
+    let compBlob = null;
+    let compName = '';
     async function compressImage() {
       const input = document.getElementById('compFile');
-      const status = document.getElementById('compStatus');
       const quality = parseFloat(document.getElementById('compQual').value);
-      if (!input.files || !input.files[0]) { status.textContent = 'Selecciona una imagen.'; return; }
+      if (!input.files || !input.files[0]) return;
       const file = input.files[0];
-      status.textContent = 'Comprimiendo…';
+      document.getElementById('compProgressWrap').classList.remove('hidden');
+      document.getElementById('compDownloadWrap').classList.add('hidden');
+      document.getElementById('compStatus').textContent = 'Comprimiendo…';
+      document.getElementById('compBtn').disabled = true;
+      animateProgress('compProgress', 700);
       try {
         const img = await loadImage(file);
         const canvas = document.createElement('canvas');
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
         canvas.getContext('2d').drawImage(img, 0, 0);
+        await new Promise(r => setTimeout(r, 400));
         canvas.toBlob(blob => {
-          if (!blob) { status.textContent = 'Error al comprimir.'; return; }
-          const name = file.name.replace(/\.[^.]+$/, '') + '_comprimido.jpg';
-          downloadBlob(blob, name);
+          compBlob = blob;
+          compName = file.name.replace(/\.[^.]+$/, '') + '_comprimido.jpg';
           const ratio = ((1 - blob.size / file.size) * 100).toFixed(0);
-          status.textContent = `Original: ${(file.size/1024).toFixed(1)} KB → ${(blob.size/1024).toFixed(1)} KB (≈${ratio}% menos).`;
+          document.getElementById('compProgress').style.width = '100%';
+          document.getElementById('compStatus').textContent = `Original ${(file.size/1024).toFixed(1)} KB → ${(blob.size/1024).toFixed(1)} KB (≈${ratio}% menos).`;
+          document.getElementById('compDownloadWrap').classList.remove('hidden');
+          document.getElementById('compBtn').disabled = false;
         }, 'image/jpeg', quality);
       } catch (e) {
-        status.textContent = 'Error: ' + e.message;
+        document.getElementById('compStatus').textContent = 'Error: ' + e.message;
+        document.getElementById('compBtn').disabled = false;
       }
     }
+    document.getElementById('compDownloadBtn').addEventListener('click', () => {
+      if (compBlob) downloadBlob(compBlob, compName);
+    });
 
     // ——— Convertidor ———
+    function onConvTypeChange() {
+      const t = document.getElementById('convType').value;
+      document.getElementById('convImageControls').classList.toggle('hidden', t !== 'image');
+      document.getElementById('convOtherMsg').classList.toggle('hidden', t === 'image');
+    }
+    let convBlob = null;
+    let convName = '';
     async function convertImage() {
       const input = document.getElementById('convFile');
-      const status = document.getElementById('convStatus');
       const mime = document.getElementById('convFormat').value;
-      if (!input.files || !input.files[0]) { status.textContent = 'Selecciona una imagen.'; return; }
+      if (!input.files || !input.files[0]) return;
       const file = input.files[0];
-      status.textContent = 'Convirtiendo…';
       const ext = mime === 'image/png' ? 'png' : mime === 'image/webp' ? 'webp' : 'jpg';
+      document.getElementById('convProgressWrap').classList.remove('hidden');
+      document.getElementById('convDownloadWrap').classList.add('hidden');
+      document.getElementById('convStatus').textContent = 'Convirtiendo…';
+      animateProgress('convProgress', 500);
       try {
         const img = await loadImage(file);
         const canvas = document.createElement('canvas');
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
         canvas.getContext('2d').drawImage(img, 0, 0);
+        await new Promise(r => setTimeout(r, 350));
         canvas.toBlob(blob => {
-          if (!blob) { status.textContent = 'Error al convertir.'; return; }
-          const name = file.name.replace(/\.[^.]+$/, '') + '.' + ext;
-          downloadBlob(blob, name);
-          status.textContent = `Descargado como ${name} (${(blob.size/1024).toFixed(1)} KB).`;
+          convBlob = blob;
+          convName = file.name.replace(/\.[^.]+$/, '') + '.' + ext;
+          document.getElementById('convProgress').style.width = '100%';
+          document.getElementById('convStatus').textContent = `Listo: ${convName} (${(blob.size/1024).toFixed(1)} KB)`;
+          document.getElementById('convDownloadWrap').classList.remove('hidden');
         }, mime, mime === 'image/jpeg' ? 0.92 : undefined);
       } catch (e) {
-        status.textContent = 'Error: ' + e.message;
+        document.getElementById('convStatus').textContent = 'Error: ' + e.message;
       }
     }
+    document.getElementById('convDownloadBtn').addEventListener('click', () => {
+      if (convBlob) downloadBlob(convBlob, convName);
+    });
 
-    // Generar una contraseña al cargar la sección por primera vez opcionalmente
-    // generatePassword();
+    // ——— Hashes ———
+    function toggleHashSrc() {
+      const isFile = document.querySelector('input[name="hashSrc"]:checked').value === 'file';
+      document.getElementById('hashFile').classList.toggle('hidden', !isFile);
+      document.getElementById('hashText').classList.toggle('hidden', isFile);
+    }
+    async function computeHashes() {
+      const isFile = document.querySelector('input[name="hashSrc"]:checked').value === 'file';
+      let buffer;
+      if (isFile) {
+        const f = document.getElementById('hashFile').files[0];
+        if (!f) return;
+        buffer = await f.arrayBuffer();
+      } else {
+        const t = document.getElementById('hashText').value;
+        if (!t) return;
+        buffer = new TextEncoder().encode(t);
+      }
+      const algs = ['SHA-256', 'SHA-1'];
+      const out = document.getElementById('hashResults');
+      out.classList.remove('hidden');
+      out.innerHTML = 'Calculando…';
+      let html = '';
+      for (const alg of algs) {
+        const dig = await crypto.subtle.digest(alg, buffer);
+        const hex = Array.from(new Uint8Array(dig)).map(b => b.toString(16).padStart(2,'0')).join('');
+        html += `<div class="p-3 rounded-lg bg-void border border-white/5"><span class="text-steel text-xs">${alg}</span><p class="text-white break-all mt-1 select-all">${hex}</p></div>`;
+      }
+      out.innerHTML = html;
+    }
+
+    // ——— Passphrases ———
+    const wordList = ['alpha','bravo','campo','delta','eco','faro','gato','hielo','isla','jade','kilo','luna','mar','nube','oro','piedra','quiz','rio','sol','tigre','uva','viento','xilofono','yate','zorro','agua','bosque','casa','dado','estrella','fuego','grano','hoja','invierno','jardin','lago','monte','norte','oceano','puente','queso','roca','sierra','torre','umbral','valle','web','xenon','yermo','zona','cipher','node','relay','shadow','quiet','bright','silent','rapid','calm','storm'];
+    function generatePassphrase() {
+      const n = parseInt(document.getElementById('ppCount').value, 10);
+      const arr = new Uint32Array(n);
+      crypto.getRandomValues(arr);
+      const words = [];
+      for (let i = 0; i < n; i++) words.push(wordList[arr[i] % wordList.length]);
+      document.getElementById('ppResult').textContent = words.join(' ');
+      document.getElementById('ppBtn').textContent = 'Re-generar';
+    }
   </script>
 </body>
 </html>

@@ -1,26 +1,27 @@
 # Privacidad Tools
 
-Herramientas de privacidad de uso local (client-side).
+Utilidades de privacidad **client-side / offline-first**.
 
-**Paleta idéntica a privacidad.me / privacidad-news** (`void`, `panel`, `neon`, `steel`, `mist`), pero diseño diferenciado orientado a un panel de utilidades.
+Misma paleta que privacidad.me (`void`, `panel`, `neon`, `steel`, `mist`). Diseño diferenciado: sin sidebar, herramientas a ancho completo, descripciones educativas y prioridad al procesamiento local.
 
-## Herramientas incluidas
+## Herramientas
 
-- Generador de nombres / alias
-- Generador de contraseñas
-- Comprobador de contraseñas filtradas (Have I Been Pwned, k-anonymity)
-- Limpiador de metadatos (imágenes)
-- Acortador de enlaces (vía servicio público con aviso)
-- Compresor de archivos / imágenes
-- Convertidor de archivos (imágenes)
+- Generador de nombres (varios estilos distintos, un resultado + Re-generar)
+- Generador de contraseñas (entropía estimada, consejos de gestores)
+- Centro de filtraciones de correo (hub informativo + contexto de acción)
+- Limpiador de metadatos (barra de progreso + descarga)
+- Identificadores cortos offline (sin CORS ni servicios externos)
+- Compresor de imágenes (progreso + descarga bajo demanda)
+- Convertidor (imágenes offline; base para más tipos)
+- Calculadora de hashes (SHA-256 / SHA-1)
+- Frases de paso (passphrases memorables)
 
-Todo el procesamiento sensible ocurre en el navegador. El comprobador de filtradas solo envía los primeros 5 caracteres del hash SHA-1 (modelo k-anonymity de HIBP).
+## Por qué el acortador público fallaba
+
+Los acortadores externos reciben la URL en sus servidores. Además, muchas APIs no permiten peticiones cross-origin desde el navegador (CORS). Por eso se sustituyó por identificadores generados y, si se desea, guardados solo en `localStorage` del usuario.
 
 ## Uso
 
-1. Activa GitHub Pages en este repositorio (Settings → Pages → Deploy from branch `main` / root).
-2. La URL será `https://starkprivacy.github.io/privacidad-tools/`.
+Activa GitHub Pages (branch `main`, root). URL típica: `https://starkprivacy.github.io/privacidad-tools/`.
 
-## Licencia / espíritu
-
-Open source, sin rastreo, alineado con el resto de proyectos de Stark Privacy.
+Una vez cargada la página, la mayoría de herramientas funcionan sin conexión.
