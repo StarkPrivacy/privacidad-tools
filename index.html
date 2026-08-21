@@ -3,20 +3,117 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Privacidad Tools</title>
+<title>Privacidad Tools — Local · Sin rastros</title>
+<meta name="description" content="Kit de privacidad en el navegador. Procesamiento local. Sin cuentas. Sin rastreo."/>
+<meta name="theme-color" content="#05070a"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{void:'#05070a',panel:'#0b0f14',neon:'#0a84ff',steel:'#8b9bb4',mist:'#c5d0e0'}}}}</script>
+<script>tailwind.config={theme:{extend:{colors:{void:'#05070a',panel:'#0b0f14',neon:'#0a84ff','neon-glow':'#3b9eff',steel:'#8b9bb4',mist:'#c5d0e0'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<style>
+body{background:#05070a}.tool-panel{display:none}.tool-panel.active{display:block}
+.glow-blue{box-shadow:0 0 24px rgba(10,132,255,.18)}
+.progress-track{height:8px;background:#151a24;border-radius:999px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#0a84ff,#3b9eff);width:0%;transition:width .3s ease;border-radius:999px}
+.result-box{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+input[type=range]{accent-color:#0a84ff}
+.pdf-sub{display:none}.pdf-sub.active{display:block}
+.pdf-tab.active{background:rgba(10,132,255,.15);color:#fff;border-color:rgba(10,132,255,.4)}
+.breach-chip{display:inline-block;padding:.25rem .6rem;margin:.15rem;border-radius:.5rem;background:#151a24;border:1px solid rgba(255,255,255,.08);font-size:.75rem;color:#c5d0e0}
+</style>
 </head>
-<body class="bg-void text-mist min-h-screen flex items-center justify-center p-6 font-sans">
-<div class="max-w-lg text-center space-y-5">
-<div class="w-12 h-12 mx-auto rounded-xl bg-neon/10 border border-neon/30 flex items-center justify-center">
-<svg class="w-6 h-6 text-neon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+<body class="font-sans text-mist antialiased selection:bg-neon/30 selection:text-white min-h-screen flex flex-col">
+<header class="sticky top-0 z-40 border-b border-white/5 bg-void/90 backdrop-blur-xl">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+<a href="#" class="flex items-center gap-2.5" onclick="showTool('home');return false">
+<div class="w-8 h-8 rounded-lg bg-neon/10 border border-neon/30 flex items-center justify-center">
+<svg class="w-4 h-4 text-neon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
 </div>
-<h1 class="text-2xl font-bold text-white">Privacidad / tools</h1>
-<p class="text-steel text-sm leading-relaxed">La web completa se está restaurando. El archivo principal se dañó temporalmente durante una actualización.</p>
-<p class="text-steel text-sm">Recarga en unos minutos o revisa el repositorio:</p>
-<a href="https://github.com/StarkPrivacy/privacidad-tools" class="inline-block px-4 py-2 rounded-xl bg-neon/15 border border-neon/30 text-neon text-sm hover:bg-neon/25" target="_blank" rel="noopener">Ver en GitHub →</a>
-<p class="text-xs text-steel/70 pt-4">Sin bucles de recarga. Página estática.</p>
+<span class="text-white font-semibold">Privacidad</span><span class="text-steel">/</span><span class="text-neon font-medium">tools</span>
+</a>
+<nav class="hidden lg:flex items-center gap-4 text-sm text-steel">
+<button onclick="showTool('principios')" class="hover:text-mist">Principios</button>
+<a href="https://starkprivacy.github.io/privacidad/" class="hover:text-mist" target="_blank" rel="noopener">privacidad.me</a>
+<a href="https://github.com/StarkPrivacy/privacidad-news" class="hover:text-mist" target="_blank" rel="noopener">news</a>
+<a href="https://boringprivacy.io" class="hover:text-mist" target="_blank" rel="noopener">Academia</a>
+</nav>
+<button id="mobileToolsBtn" class="lg:hidden px-3 py-1.5 rounded-lg border border-white/10 text-sm text-steel">Menú</button>
 </div>
+</header>
+<main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
+<section id="panel-home" class="tool-panel active">
+<div class="mb-10 text-center sm:text-left">
+<div class="flex flex-wrap justify-center sm:justify-start gap-2 mb-4">
+<span class="inline-flex text-xs font-medium px-3 py-1 rounded-full bg-neon/15 text-neon border border-neon/25">Procesamiento local</span>
+<span class="inline-flex text-xs font-medium px-3 py-1 rounded-full bg-white/5 text-mist border border-white/10">Enfocado en privacidad</span>
+</div>
+<h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">Tu kit de privacidad.<br class="hidden sm:block"> En tu navegador.</h1>
+<p class="text-steel text-base max-w-2xl leading-relaxed">Herramientas que trabajan en tu dispositivo. Sin cuentas, sin telemetría y sin subir archivos a un servidor ajeno.</p>
+</div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+<button onclick="showTool('filtraciones')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Filtraciones de correo</h2><p class="text-sm text-steel mt-0.5">Dónde aparece tu email.</p></button>
+<button onclick="showTool('passwords')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Contraseñas</h2><p class="text-sm text-steel mt-0.5">Generar y estimar rotura.</p></button>
+<button onclick="showTool('pwdleak')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">¿Contraseña filtrada?</h2><p class="text-sm text-steel mt-0.5">Comprobación k-anónima.</p></button>
+<button onclick="showTool('nombres')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Nombres / alias</h2><p class="text-sm text-steel mt-0.5">Identidades operativas.</p></button>
+<button onclick="showTool('metadatos')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Limpiar metadatos</h2><p class="text-sm text-steel mt-0.5">GPS y EXIF fuera.</p></button>
+<button onclick="showTool('pdf')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Herramientas PDF</h2><p class="text-sm text-steel mt-0.5">Combinar, dividir, rotar…</p></button>
+<button onclick="showTool('compresor')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Compresor</h2><p class="text-sm text-steel mt-0.5">Menos peso, control de calidad.</p></button>
+<button onclick="showTool('convertidor')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Convertidor multimedia</h2><p class="text-sm text-steel mt-0.5">PNG · JPEG · WebP.</p></button>
+<button onclick="showTool('hashes')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Hashes</h2><p class="text-sm text-steel mt-0.5">Integridad de archivos.</p></button>
+<button onclick="showTool('passphrases')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Frases de paso</h2><p class="text-sm text-steel mt-0.5">Memorables y resistentes.</p></button>
+<button onclick="showTool('cifrado')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Cifrado de texto</h2><p class="text-sm text-steel mt-0.5">AES-GCM local.</p></button>
+<button onclick="showTool('urls')" class="text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 transition"><h2 class="font-semibold text-white">Limpiar URLs</h2><p class="text-sm text-steel mt-0.5">Sin utm ni trackers.</p></button>
+</div>
+</section>
+<section id="panel-filtraciones" class="tool-panel">
+<h1 class="text-2xl font-bold text-white mb-2">Centro de filtraciones</h1>
+<p class="text-steel mb-4 text-sm">Consulta índices públicos de filtraciones asociadas a un correo.</p>
+<div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
+<input type="email" id="breachEmail" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="tu@correo.com">
+<button id="breachBtn" onclick="runBreachScan()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Revisar filtraciones</button>
+<div id="breachProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="breachProgress" class="progress-bar"></div></div><p id="breachStatus" class="text-sm text-neon"></p></div>
+</div>
+<div id="breachResults" class="hidden space-y-6 mt-6">
+<div id="breachSummary"></div>
+<div id="breachList" class="space-y-3 max-h-96 overflow-y-auto"></div>
+</div>
+</section>
+<section id="panel-passwords" class="tool-panel">
+<h1 class="text-2xl font-bold text-white mb-4">Contraseñas</h1>
+<div class="grid lg:grid-cols-2 gap-6">
+<div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+<div class="flex justify-between text-sm"><span class="text-steel">Longitud</span><span id="pwdLenLabel" class="text-white">24</span></div>
+<input type="range" id="pwdLen" min="12" max="64" value="24" class="w-full" oninput="document.getElementById('pwdLenLabel').textContent=this.value">
+<div class="grid grid-cols-2 gap-2 text-sm">
+<label class="flex items-center gap-2"><input type="checkbox" id="pwdUpper" checked class="accent-neon"> Mayúsculas</label>
+<label class="flex items-center gap-2"><input type="checkbox" id="pwdLower" checked class="accent-neon"> Minúsculas</label>
+<label class="flex items-center gap-2"><input type="checkbox" id="pwdNum" checked class="accent-neon"> Números</label>
+<label class="flex items-center gap-2"><input type="checkbox" id="pwdSym" checked class="accent-neon"> Símbolos</label>
+</div>
+<button id="pwdBtn" onclick="generatePassword()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button>
+<div class="flex gap-2"><input type="text" id="pwdOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white"><button onclick="copyText('pwdOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel">Copiar</button></div>
+<p id="pwdEntropy" class="text-sm text-steel"></p>
+</div>
+<div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+<h3 class="text-white font-medium">¿Cuánto tarda en romperse?</h3>
+<input type="text" id="crackInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña" oninput="estimateCrack()">
+<div id="crackResult" class="text-sm text-steel"></div>
+</div>
+</div>
+</section>
+<section id="panel-pwdleak" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">¿Contraseña filtrada?</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="password" id="pwdLeakInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña"><button onclick="checkPwdLeak()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Comprobar</button><div id="pwdLeakOut" class="text-sm text-steel"></div></div></section>
+<section id="panel-nombres" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Generador de nombres</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><select id="nameStyle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="sombra">Sombra</option><option value="tecnico">Técnico</option><option value="natural">Natural</option><option value="corto">Corto</option><option value="hex">Hex</option></select><button id="nameBtn" onclick="generateName()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button><p id="nameResult" class="text-2xl text-white result-box">—</p></div></section>
+<section id="panel-metadatos" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Limpiador de metadatos</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="metaFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button id="metaBtn" onclick="stripMetadata()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Eliminar metadatos</button><div id="metaProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="metaProgress" class="progress-bar"></div></div><p id="metaStatus" class="text-sm text-steel"></p></div><div id="metaDownloadWrap" class="hidden"><button id="metaDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm">Descargar</button></div></div></section>
+<section id="panel-pdf" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Herramientas PDF</h1><p class="text-steel text-sm mb-4">Usa las pestañas del menú o recarga tras restaurar la versión completa con todas las subherramientas.</p><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfInfoFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="pdfInfo()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Analizar PDF</button><div id="pdfInfoOut" class="text-sm text-steel"></div></div></section>
+<section id="panel-compresor" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Compresor</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="compFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><div class="flex justify-between text-sm"><span class="text-steel">Calidad</span><span id="compQualLabel">Buena calidad</span></div><input type="range" id="compQual" min="0.2" max="1" step="0.05" value="0.8" class="w-full" oninput="updateCompLabel()"><button id="compBtn" onclick="compressImage()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Comprimir</button><div id="compProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="compProgress" class="progress-bar"></div></div><p id="compStatus" class="text-sm text-steel"></p></div><div id="compDownloadWrap" class="hidden"><button id="compDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm">Descargar</button></div></div></section>
+<section id="panel-convertidor" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Convertidor multimedia</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="convFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><select id="convFormat" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select><button onclick="convertImage()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Convertir</button><div id="convProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="convProgress" class="progress-bar"></div></div><p id="convStatus" class="text-sm text-steel"></p></div><div id="convDownloadWrap" class="hidden"><button id="convDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm">Descargar</button></div></div></section>
+<section id="panel-hashes" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Hashes</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="hashFile" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="computeHashes()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Calcular</button><div id="hashResults" class="space-y-2 text-sm result-box hidden"></div></div></section>
+<section id="panel-passphrases" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Frases de paso</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><div class="flex justify-between text-sm"><span class="text-steel">Palabras</span><span id="ppCountLabel">6</span></div><input type="range" id="ppCount" min="4" max="10" value="6" class="w-full" oninput="document.getElementById('ppCountLabel').textContent=this.value"><button id="ppBtn" onclick="generatePassphrase()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button><p id="ppResult" class="text-xl text-white result-box">—</p><p id="ppStrength" class="text-sm text-steel"></p></div></section>
+<section id="panel-cifrado" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Cifrado de texto</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><textarea id="cipherText" class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto"></textarea><input type="password" id="cipherPass" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña"><div class="flex gap-3"><button onclick="encryptText()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Cifrar</button><button onclick="decryptText()" class="px-5 py-3 rounded-xl border border-white/10 text-sm text-steel">Descifrar</button></div><textarea id="cipherOut" readonly class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box"></textarea></div></section>
+<section id="panel-urls" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Limpiar URLs</h1><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="url" id="urlIn" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="https://…"><button onclick="cleanUrl()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Limpiar</button><input type="text" id="urlOut" readonly class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box"><p id="urlStatus" class="text-sm text-steel"></p></div></section>
+<section id="panel-principios" class="tool-panel"><h1 class="text-2xl font-bold text-white mb-4">Principios</h1><div class="max-w-2xl text-steel text-sm space-y-4"><p>Procesamiento en el dispositivo. Sin cuentas. Sin telemetría. Código público.</p><p><a href="https://boringprivacy.io" class="text-neon">boringprivacy.io</a> · <a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon">privacidad.news</a></p></div></section>
+</main>
+<footer class="border-t border-white/5 py-8"><div class="max-w-6xl mx-auto px-4 text-sm text-steel flex justify-between"><p>© 2026 Privacidad Tools</p><a href="https://github.com/StarkPrivacy/privacidad-tools" class="hover:text-mist">GitHub</a></div></footer>
+<script src="app.js"></script>
 </body>
 </html>
