@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Privacidad Tools — Local · Sin rastros</title>
-<meta name="description" content="Kit de privacidad en el navegador: filtraciones, contraseñas, PDF, metadatos, cifrado. Procesamiento local."/>
+<meta name="description" content="Kit de privacidad en el navegador. Procesamiento local. Sin cuentas. Sin rastreo."/>
 <meta name="theme-color" content="#05070a"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{void:'#05070a',panel:'#0b0f14',neon:'#0a84ff','neon-glow':'#3b9eff',steel:'#8b9bb4',mist:'#c5d0e0'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
@@ -12,14 +12,14 @@
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <style>
 body{background:#05070a}.tool-panel{display:none}.tool-panel.active{display:block}
-.glow-blue{box-shadow:0 0 24px rgba(10,132,255,.2)}
+.glow-blue{box-shadow:0 0 24px rgba(10,132,255,.18)}
 .progress-track{height:8px;background:#151a24;border-radius:999px;overflow:hidden}
-.progress-bar{height:100%;background:linear-gradient(90deg,#0a84ff,#3b9eff);width:0%;transition:width .35s ease;border-radius:999px}
+.progress-bar{height:100%;background:linear-gradient(90deg,#0a84ff,#3b9eff);width:0%;transition:width .3s ease;border-radius:999px}
 .result-box{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 input[type=range]{accent-color:#0a84ff}
-::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#1a2230;border-radius:4px}
 .pdf-sub{display:none}.pdf-sub.active{display:block}
 .pdf-tab.active{background:rgba(10,132,255,.15);color:#fff;border-color:rgba(10,132,255,.4)}
+.breach-chip{display:inline-block;padding:.25rem .6rem;margin:.15rem;border-radius:.5rem;background:#151a24;border:1px solid rgba(255,255,255,.08);font-size:.75rem;color:#c5d0e0}
 </style>
 </head>
 <body class="font-sans text-mist antialiased selection:bg-neon/30 selection:text-white min-h-screen flex flex-col">
@@ -33,17 +33,19 @@ input[type=range]{accent-color:#0a84ff}
 <span class="text-white font-semibold">Privacidad</span><span class="text-steel">/</span><span class="text-neon font-medium">tools</span>
 </a>
 <nav class="hidden lg:flex items-center gap-4 text-sm text-steel">
+<button onclick="showTool('principios')" class="hover:text-mist">Principios</button>
 <a href="https://starkprivacy.github.io/privacidad/" class="hover:text-mist" target="_blank" rel="noopener">privacidad.me</a>
 <a href="https://github.com/StarkPrivacy/privacidad-news" class="hover:text-mist" target="_blank" rel="noopener">news</a>
 <a href="https://boringprivacy.io" class="hover:text-mist" target="_blank" rel="noopener">Academia</a>
-<a href="https://github.com/StarkPrivacy/privacidad-tools" class="hover:text-mist" target="_blank" rel="noopener">Código</a>
 </nav>
 <button id="mobileToolsBtn" class="lg:hidden px-3 py-1.5 rounded-lg border border-white/10 text-sm text-steel">Menú</button>
 </div>
 <div id="mobileTools" class="hidden lg:hidden border-t border-white/5 bg-void px-4 py-3 space-y-1 max-h-80 overflow-y-auto text-sm">
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('home')">Inicio</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('principios')">Principios</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('filtraciones')">Filtraciones</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('passwords')">Contraseñas</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('pwdleak')">¿Contraseña filtrada?</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('nombres')">Nombres</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('metadatos')">Metadatos</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('pdf')">Herramientas PDF</button>
@@ -53,7 +55,6 @@ input[type=range]{accent-color:#0a84ff}
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('passphrases')">Frases de paso</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('cifrado')">Cifrado de texto</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('urls')">Limpiar URLs</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('tokens')">Tokens seguros</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('acortador')">IDs cortos</button>
 </div>
 </header>
@@ -69,69 +70,90 @@ input[type=range]{accent-color:#0a84ff}
 <span class="inline-flex text-xs font-medium px-3 py-1 rounded-full bg-white/5 text-steel border border-white/10">Sin cuentas · Sin rastreo</span>
 </div>
 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">Tu kit de privacidad.<br class="hidden sm:block"> En tu navegador.</h1>
-<p class="text-steel text-base sm:text-lg max-w-2xl leading-relaxed">Genera, limpia y comprueba sin subir archivos a ningún servidor. Una vez cargada la página, la mayor parte funciona sin internet.</p>
+<p class="text-steel text-base sm:text-lg max-w-2xl leading-relaxed">Herramientas que trabajan en tu dispositivo. Sin cuentas, sin telemetría y sin subir archivos a un servidor ajeno. Una vez cargada la página, casi todo sigue funcionando sin internet.</p>
 </div>
-<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-<button onclick="showTool('filtraciones')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-red-500/15 border border-red-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Filtraciones de correo</h2>
-<p class="text-sm text-steel">Escaneo y dónde se ha filtrado.</p>
-</button>
-<button onclick="showTool('passwords')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Contraseñas</h2>
-<p class="text-sm text-steel">Generar y estimar tiempo de rotura.</p>
-</button>
-<button onclick="showTool('nombres')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-violet-500/15 border border-violet-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Nombres / alias</h2>
-<p class="text-sm text-steel">Estilos distintos, re-generar.</p>
-</button>
-<button onclick="showTool('metadatos')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Limpiar metadatos</h2>
-<p class="text-sm text-steel">Quita GPS y EXIF de fotos.</p>
-</button>
-<button onclick="showTool('pdf')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-sky-500/15 border border-sky-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Herramientas para .pdf</h2>
-<p class="text-sm text-steel">Info, combinar, dividir, rotar.</p>
-</button>
-<button onclick="showTool('compresor')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-orange-500/15 border border-orange-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Compresor</h2>
-<p class="text-sm text-steel">Reduce peso con control de calidad.</p>
-</button>
-<button onclick="showTool('convertidor')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-cyan-500/15 border border-cyan-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Convertidor multimedia</h2>
-<p class="text-sm text-steel">PNG · JPEG · WebP offline.</p>
-</button>
-<button onclick="showTool('hashes')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-lime-500/15 border border-lime-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-lime-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Hashes</h2>
-<p class="text-sm text-steel">SHA-256, MD5 y más.</p>
-</button>
-<button onclick="showTool('passphrases')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-pink-500/15 border border-pink-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Frases de paso</h2>
-<p class="text-sm text-steel">Diceware configurable.</p>
-</button>
-<button onclick="showTool('cifrado')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Cifrado de texto</h2>
-<p class="text-sm text-steel">AES-GCM local con contraseña.</p>
-</button>
-<button onclick="showTool('urls')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Limpiar URLs</h2>
-<p class="text-sm text-steel">Quita parámetros de tracking.</p>
-</button>
-<button onclick="showTool('tokens')" class="group text-left p-5 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
-<div class="w-11 h-11 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/25 flex items-center justify-center mb-3"><svg class="w-5 h-5 text-fuchsia-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-<h2 class="font-semibold text-white mb-1">Tokens seguros</h2>
-<p class="text-sm text-steel">UUID, hex, base64url.</p>
-</button>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+
+<button onclick="showTool('filtraciones')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Filtraciones de correo</h2><p class="text-sm text-steel mt-0.5">Dónde aparece tu email y qué hacer.</p></div>
+<svg class="w-5 h-5 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></button>
+
+<button onclick="showTool('passwords')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Contraseñas</h2><p class="text-sm text-steel mt-0.5">Generar y estimar tiempo de rotura.</p></div>
+<svg class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></button>
+
+<button onclick="showTool('pwdleak')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">¿Contraseña filtrada?</h2><p class="text-sm text-steel mt-0.5">Comprobación k-anónima, sin enviar la clave.</p></div>
+<svg class="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div></button>
+
+<button onclick="showTool('nombres')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Nombres / alias</h2><p class="text-sm text-steel mt-0.5">Identidades operativas distintas.</p></div>
+<svg class="w-5 h-5 text-violet-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></button>
+
+<button onclick="showTool('metadatos')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Limpiar metadatos</h2><p class="text-sm text-steel mt-0.5">GPS y EXIF fuera antes de publicar.</p></div>
+<svg class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></button>
+
+<button onclick="showTool('pdf')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Herramientas para .pdf</h2><p class="text-sm text-steel mt-0.5">Combinar, dividir, rotar, metadatos…</p></div>
+<svg class="w-5 h-5 text-sky-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></button>
+
+<button onclick="showTool('compresor')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Compresor</h2><p class="text-sm text-steel mt-0.5">Menos peso, control de calidad.</p></div>
+<svg class="w-5 h-5 text-orange-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div></button>
+
+<button onclick="showTool('convertidor')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Convertidor multimedia</h2><p class="text-sm text-steel mt-0.5">PNG · JPEG · WebP offline.</p></div>
+<svg class="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></div></button>
+
+<button onclick="showTool('hashes')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Hashes</h2><p class="text-sm text-steel mt-0.5">Integridad de archivos y texto.</p></div>
+<svg class="w-5 h-5 text-lime-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div></button>
+
+<button onclick="showTool('passphrases')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Frases de paso</h2><p class="text-sm text-steel mt-0.5">Memorables y resistentes.</p></div>
+<svg class="w-5 h-5 text-pink-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div></button>
+
+<button onclick="showTool('cifrado')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Cifrado de texto</h2><p class="text-sm text-steel mt-0.5">AES-GCM solo en tu equipo.</p></div>
+<svg class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div></button>
+
+<button onclick="showTool('urls')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition">
+<div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Limpiar URLs</h2><p class="text-sm text-steel mt-0.5">Sin utm, fbclid ni gclid.</p></div>
+<svg class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div></button>
+
+</div>
+<p class="text-center text-sm text-steel"><button onclick="showTool('principios')" class="text-neon hover:underline">Cómo pensamos estas herramientas →</button></p>
+</section>
+
+<!-- PRINCIPIOS -->
+<section id="panel-principios" class="tool-panel">
+<div class="mb-2 text-xs text-neon/80 uppercase tracking-wider font-medium">Stark Privacy</div>
+<h1 class="text-2xl sm:text-3xl font-bold text-white mb-4">Principios</h1>
+<div class="max-w-2xl space-y-6 text-sm sm:text-base text-steel leading-relaxed">
+<p class="text-mist">Privacidad Tools no es un producto que te vigila para «mejorar la experiencia». Es un conjunto de utilidades que viven en tu navegador y, en la medida de lo posible, no necesitan red después de cargar.</p>
+<div class="p-5 rounded-2xl bg-panel border border-white/5 space-y-3">
+<p class="text-white font-medium">Qué priorizamos</p>
+<ul class="space-y-2 list-disc list-inside">
+<li><strong class="text-mist">Procesamiento en el dispositivo.</strong> Archivos, contraseñas y textos se manipulan aquí. No construimos un backend que los reciba.</li>
+<li><strong class="text-mist">Sin cuentas.</strong> No hay registro, cookies de sesión ni perfiles.</li>
+<li><strong class="text-mist">Transparencia.</strong> El código es público en GitHub. Puedes leer qué hace cada botón.</li>
+<li><strong class="text-mist">Utilidad real.</strong> Preferimos pocas herramientas bien hechas a un catálogo infinito de relleno.</li>
+</ul>
+</div>
+<div class="p-5 rounded-2xl bg-panel border border-white/5 space-y-3">
+<p class="text-white font-medium">Qué no hacemos</p>
+<ul class="space-y-2 list-disc list-inside">
+<li>No subimos tus PDF, fotos o textos a un servidor nuestro.</li>
+<li>No vendemos datos ni mostramos publicidad de terceros.</li>
+<li>No pedimos permisos de cámara, micrófono o ubicación.</li>
+</ul>
+</div>
+<div class="p-5 rounded-2xl bg-panel border border-white/5 space-y-3">
+<p class="text-white font-medium">Internet cuando hace falta</p>
+<p>La comprobación de filtraciones de correo y de contraseñas consultan índices públicos (solo el email, o un prefijo de hash de la contraseña). El resto de herramientas puede usarse offline una vez cargada la página.</p>
+</div>
+<p>Más contexto y formación: <a href="https://boringprivacy.io" class="text-neon hover:underline" target="_blank" rel="noopener">boringprivacy.io</a> · noticias en <a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon hover:underline" target="_blank" rel="noopener">privacidad.news</a> · ecosistema en <a href="https://starkprivacy.github.io/privacidad/" class="text-neon hover:underline" target="_blank" rel="noopener">privacidad.me</a>.</p>
 </div>
 </section>
 
@@ -139,7 +161,11 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-filtraciones" class="tool-panel">
 <div class="mb-2 text-xs text-red-300/80 uppercase tracking-wider font-medium">Exposición de correo</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Centro de filtraciones</h1>
-<p class="text-steel mb-8 max-w-2xl text-sm sm:text-base">Introduce un correo, lanza el escaneo y verás filtraciones concretas (nombre, fecha y datos expuestos) junto con el plan de respuesta.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Consulta índices públicos de filtraciones conocidas y muestra <strong class="text-mist">todas las que aparecen asociadas a ese correo</strong>, con enlaces para contrastar.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel space-y-1">
+<p class="text-mist font-medium">Cómo funciona</p>
+<p>Se consulta un índice abierto de filtraciones. Solo se envía la dirección de correo (no la contraseña). El listado devuelto son nombres de incidentes reales ya públicos. Puedes verificar en Have I Been Pwned o XposedOrNot.</p>
+</div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 mb-8 max-w-xl space-y-4">
 <label class="block text-sm text-steel">Correo a revisar</label>
 <input type="email" id="breachEmail" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="tu@correo.com">
@@ -150,23 +176,26 @@ input[type=range]{accent-color:#0a84ff}
 </div>
 </div>
 <div id="breachResults" class="hidden space-y-6 mb-10">
-<div id="breachSummary" class="p-5 rounded-2xl border border-red-500/30 bg-red-500/10"></div>
+<div id="breachSummary"></div>
 <div>
-<h3 class="text-white font-medium mb-3">Dónde se ha filtrado</h3>
-<div id="breachList" class="space-y-3"></div>
+<h3 class="text-white font-medium mb-2">Filtraciones encontradas</h3>
+<div id="breachList" class="max-h-80 overflow-y-auto p-4 rounded-xl bg-void border border-white/10"></div>
+</div>
+<div class="flex flex-wrap gap-3 text-sm">
+<a id="breachLinkXon" href="#" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-neon/10 border border-neon/30 text-neon">Verificar en XposedOrNot →</a>
+<a id="breachLinkHibp" href="https://haveibeenpwned.com/" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-mist">Abrir Have I Been Pwned →</a>
 </div>
 <div class="p-5 rounded-2xl border border-neon/20 bg-neon/5">
 <h3 class="text-white font-medium mb-3">Plan de respuesta</h3>
 <ol class="text-sm text-steel space-y-3 list-none">
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">0</span><span><strong class="text-mist">Protege tu información antes de que sea tarde.</strong> Formación en <a href="https://boringprivacy.io" class="text-neon hover:underline" target="_blank" rel="noopener">boringprivacy.io</a>.</span></li>
+<li class="flex gap-3"><span class="text-neon font-bold shrink-0">0</span><span><strong class="text-mist">Antes de que sea tarde.</strong> Hábitos y formación en <a href="https://boringprivacy.io" class="text-neon hover:underline" target="_blank" rel="noopener">boringprivacy.io</a>.</span></li>
 <li class="flex gap-3"><span class="text-neon font-bold shrink-0">1</span><span>Cambia la contraseña del servicio afectado y de cualquier sitio donde la reutilizaras.</span></li>
 <li class="flex gap-3"><span class="text-neon font-bold shrink-0">2</span><span>Activa 2FA (app o hardware) en correo y cuentas críticas.</span></li>
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">3</span><span>Usa un gestor (Proton Pass / KeePassXC) y contraseñas únicas.</span></li>
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">4</span><span>Mantente al día en <a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon hover:underline" target="_blank" rel="noopener">privacidad.news</a>.</span></li>
+<li class="flex gap-3"><span class="text-neon font-bold shrink-0">3</span><span>Gestor de contraseñas: <a href="https://privtr.ee/@stark" class="text-neon hover:underline" target="_blank" rel="noopener">Proton Pass</a> o <a href="https://keepassxc.org/" class="text-neon hover:underline" target="_blank" rel="noopener">KeePassXC</a>.</span></li>
+<li class="flex gap-3"><span class="text-neon font-bold shrink-0">4</span><span>Sigue noticias en <a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon hover:underline" target="_blank" rel="noopener">privacidad.news</a>.</span></li>
 <li class="flex gap-3"><span class="text-neon font-bold shrink-0">5</span><span>Revisa sesiones activas y dispositivos vinculados al correo.</span></li>
 </ol>
 </div>
-<p class="text-xs text-steel/70">Las APIs de listado exacto por email (p. ej. HIBP) requieren clave de servidor. Este centro muestra filtraciones públicas reales indexadas y el flujo completo de respuesta.</p>
 </div>
 </section>
 
@@ -174,8 +203,9 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-passwords" class="tool-panel">
 <div class="mb-2 text-xs text-emerald-300/80 uppercase tracking-wider font-medium">Secretos fuertes</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Contraseñas</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm sm:text-base">Genera contraseñas criptográficas y estima cuánto costaría romper una contraseña concreta.</p>
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+<p class="text-steel mb-3 max-w-2xl text-sm">Genera contraseñas con el generador criptográfico del navegador y estima el coste de forzarlas offline.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se usa aleatoriedad del sistema (<code class="text-neon/80">crypto.getRandomValues</code>). Nada se envía. El tiempo de rotura es una estimación matemática a ~10¹⁰ intentos/s (GPU offline).</p></div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
 <div class="p-4 rounded-xl bg-panel border border-white/5"><p class="text-xs text-steel mb-1">8 car. solo minúsculas</p><p class="text-white font-medium text-sm">Segundos – minutos</p></div>
 <div class="p-4 rounded-xl bg-panel border border-white/5"><p class="text-xs text-steel mb-1">10 car. mixtos</p><p class="text-white font-medium text-sm">Horas – días</p></div>
 <div class="p-4 rounded-xl bg-panel border border-white/5"><p class="text-xs text-steel mb-1">14+ con símbolos</p><p class="text-white font-medium text-sm">Siglos (práctica)</p></div>
@@ -184,12 +214,11 @@ input[type=range]{accent-color:#0a84ff}
 <div class="p-5 rounded-2xl bg-panel border border-white/5 mb-8">
 <p class="text-sm text-mist font-medium mb-2">Gestores que recomendamos</p>
 <div class="flex flex-wrap gap-3 text-sm">
-<a href="https://privtr.ee/@stark" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-neon/10 border border-neon/30 text-neon hover:bg-neon/20">Proton Pass →</a>
-<a href="https://keepassxc.org/" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-mist hover:bg-white/10">KeePassXC →</a>
+<a href="https://privtr.ee/@stark" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-neon/10 border border-neon/30 text-neon">Proton Pass →</a>
+<a href="https://keepassxc.org/" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-mist">KeePassXC →</a>
 </div>
-<p class="text-xs text-steel mt-3">Son las opciones que recomendamos desde Stark Privacy.</p>
 </div>
-<div class="grid lg:grid-cols-2 gap-6 mb-10">
+<div class="grid lg:grid-cols-2 gap-6">
 <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
 <h3 class="text-white font-medium">Generar</h3>
 <div class="flex justify-between text-sm"><span class="text-steel">Longitud</span><span id="pwdLenLabel" class="text-white font-medium">24</span></div>
@@ -201,18 +230,28 @@ input[type=range]{accent-color:#0a84ff}
 <label class="flex items-center gap-2"><input type="checkbox" id="pwdSym" checked class="accent-neon"> Símbolos</label>
 </div>
 <button id="pwdBtn" onclick="generatePassword()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button>
-<div class="flex gap-2">
-<input type="text" id="pwdOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white" placeholder="Contraseña">
-<button onclick="copyText('pwdOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel">Copiar</button>
-</div>
+<div class="flex gap-2"><input type="text" id="pwdOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white" placeholder="Contraseña"><button onclick="copyText('pwdOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel">Copiar</button></div>
 <p id="pwdEntropy" class="text-sm text-steel"></p>
 </div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
 <h3 class="text-white font-medium">¿Cuánto tarda en romperse?</h3>
-<p class="text-xs text-steel">Pega una contraseña (no se envía a ningún sitio) y estima el tiempo de fuerza bruta offline.</p>
+<p class="text-xs text-steel">No se envía a ningún servidor.</p>
 <input type="text" id="crackInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña a analizar" oninput="estimateCrack()">
 <div id="crackResult" class="text-sm space-y-2 text-steel"></div>
 </div>
+</div>
+</section>
+
+<!-- PWD LEAK -->
+<section id="panel-pwdleak" class="tool-panel">
+<div class="mb-2 text-xs text-rose-300/80 uppercase tracking-wider font-medium">Exposición de contraseña</div>
+<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">¿Tu contraseña está filtrada?</h1>
+<p class="text-steel mb-3 max-w-2xl text-sm">Comprueba si una contraseña aparece en bases de filtraciones conocidas <strong class="text-mist">sin enviarla completa</strong>.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se calcula el hash SHA-1 en tu navegador y solo se envían los 5 primeros caracteres a la API de rangos (k-anonimato). La contraseña en claro no sale del dispositivo.</p></div>
+<div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
+<input type="password" id="pwdLeakInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña a comprobar">
+<button id="pwdLeakBtn" onclick="checkPwdLeak()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Comprobar</button>
+<div id="pwdLeakOut" class="text-sm text-steel"></div>
 </div>
 </section>
 
@@ -220,7 +259,8 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-nombres" class="tool-panel">
 <div class="mb-2 text-xs text-violet-300/80 uppercase tracking-wider font-medium">Identidad operativa</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Generador de nombres</h1>
-<p class="text-steel mb-8 max-w-2xl text-sm">Un alias por generación, con estructuras distintas.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Un alias por generación, con estructuras distintas para no repetir el mismo patrón.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Combinaciones locales de palabras, sílabas o hex a partir de aleatoriedad del navegador. No hay lista de usuarios ni servidor.</p></div>
 <div class="grid lg:grid-cols-5 gap-6">
 <div class="lg:col-span-2 space-y-4 p-6 rounded-2xl bg-panel border border-white/5">
 <select id="nameStyle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white">
@@ -228,7 +268,7 @@ input[type=range]{accent-color:#0a84ff}
 </select>
 <button id="nameBtn" onclick="generateName()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button>
 </div>
-<div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 flex flex-col justify-center min-h-[140px]">
+<div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 flex flex-col justify-center min-h-[120px]">
 <p class="text-xs text-steel mb-2 uppercase tracking-wider">Resultado</p>
 <div class="flex flex-wrap items-center gap-3"><span id="nameResult" class="text-2xl font-semibold text-white result-box break-all">—</span><button onclick="copyPlain('nameResult')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button></div>
 </div>
@@ -237,9 +277,10 @@ input[type=range]{accent-color:#0a84ff}
 
 <!-- METADATOS -->
 <section id="panel-metadatos" class="tool-panel">
-<div class="mb-2 text-xs text-amber-300/80 uppercase tracking-wider font-medium">Fotos y ubicación</div>
+<div class="mb-2 text-xs text-amber-300/80 uppercase tracking-wider font-medium">Fotos</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Limpiador de metadatos</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Elimina GPS, EXIF y datos ocultos re-exportando la imagen en el navegador.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Quita GPS, modelo de cámara, fechas y demás EXIF antes de compartir una foto.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>La imagen se dibuja en un canvas del navegador y se re-exporta. Al no copiar el contenedor original, se pierden los metadatos embebidos. El archivo no se sube.</p></div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="metaFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
 <button id="metaBtn" onclick="stripMetadata()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Eliminar metadatos</button>
@@ -248,16 +289,20 @@ input[type=range]{accent-color:#0a84ff}
 </div>
 </section>
 
-<!-- PDF HUB -->
+<!-- PDF -->
 <section id="panel-pdf" class="tool-panel">
 <div class="mb-2 text-xs text-sky-300/80 uppercase tracking-wider font-medium">Documentos</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Herramientas para .pdf</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Todo con <code class="text-neon/90 text-xs">pdf-lib</code> en tu navegador: información, combinar, dividir y rotar. Sin subir archivos.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Manipulación local de PDF: información, combinar, extraer, rotar, eliminar páginas, invertir orden y metadatos.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>El archivo se lee en memoria en el navegador, se reconstruye la estructura de páginas según la operación y se genera un PDF nuevo para descargar. Nada se envía a un servidor.</p></div>
 <div class="flex flex-wrap gap-2 mb-6">
-<button class="pdf-tab active px-4 py-2 rounded-xl border border-white/10 text-sm text-steel" data-pdf="info" onclick="showPdfSub('info')">Información</button>
-<button class="pdf-tab px-4 py-2 rounded-xl border border-white/10 text-sm text-steel" data-pdf="merge" onclick="showPdfSub('merge')">Combinar</button>
-<button class="pdf-tab px-4 py-2 rounded-xl border border-white/10 text-sm text-steel" data-pdf="split" onclick="showPdfSub('split')">Dividir / extraer</button>
-<button class="pdf-tab px-4 py-2 rounded-xl border border-white/10 text-sm text-steel" data-pdf="rotate" onclick="showPdfSub('rotate')">Rotar</button>
+<button class="pdf-tab active px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="info" onclick="showPdfSub('info')">Info</button>
+<button class="pdf-tab px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="merge" onclick="showPdfSub('merge')">Combinar</button>
+<button class="pdf-tab px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="split" onclick="showPdfSub('split')">Extraer</button>
+<button class="pdf-tab px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="rotate" onclick="showPdfSub('rotate')">Rotar</button>
+<button class="pdf-tab px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="remove" onclick="showPdfSub('remove')">Eliminar páginas</button>
+<button class="pdf-tab px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="reverse" onclick="showPdfSub('reverse')">Invertir orden</button>
+<button class="pdf-tab px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="meta" onclick="showPdfSub('meta')">Metadatos</button>
 </div>
 <div id="pdf-info" class="pdf-sub active p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="pdfInfoFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
@@ -266,54 +311,67 @@ input[type=range]{accent-color:#0a84ff}
 </div>
 <div id="pdf-merge" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="pdfMergeFiles" accept="application/pdf" multiple class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
-<button onclick="pdfMerge()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Combinar PDFs</button>
+<button onclick="pdfMerge()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Combinar</button>
 <div id="pdfMergeOut" class="text-sm text-steel"></div>
 </div>
 <div id="pdf-split" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="pdfSplitFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
-<label class="block text-sm text-steel">Páginas a extraer (ej. 1-3,5)</label>
-<input type="text" id="pdfSplitRange" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="1-3,5">
-<button onclick="pdfSplit()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Extraer páginas</button>
+<input type="text" id="pdfSplitRange" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Páginas: 1-3,5">
+<button onclick="pdfSplit()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Extraer</button>
 <div id="pdfSplitOut" class="text-sm text-steel"></div>
 </div>
 <div id="pdf-rotate" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="pdfRotateFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
-<select id="pdfRotateAngle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white">
-<option value="90">90° derecha</option><option value="180">180°</option><option value="270">90° izquierda</option>
-</select>
-<button onclick="pdfRotate()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Rotar todas las páginas</button>
+<select id="pdfRotateAngle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="90">90° derecha</option><option value="180">180°</option><option value="270">90° izquierda</option></select>
+<button onclick="pdfRotate()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Rotar</button>
 <div id="pdfRotateOut" class="text-sm text-steel"></div>
+</div>
+<div id="pdf-remove" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
+<input type="file" id="pdfRemoveFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
+<input type="text" id="pdfRemoveRange" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Páginas a eliminar: 2,4-6">
+<button onclick="pdfRemove()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Eliminar y descargar</button>
+<div id="pdfRemoveOut" class="text-sm text-steel"></div>
+</div>
+<div id="pdf-reverse" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
+<input type="file" id="pdfReverseFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
+<button onclick="pdfReverse()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Invertir orden de páginas</button>
+<div id="pdfReverseOut" class="text-sm text-steel"></div>
+</div>
+<div id="pdf-meta" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
+<input type="file" id="pdfMetaFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
+<input type="text" id="pdfMetaTitle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Título">
+<input type="text" id="pdfMetaAuthor" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Autor">
+<button onclick="pdfSetMeta()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Aplicar y descargar</button>
+<div id="pdfMetaOut" class="text-sm text-steel"></div>
 </div>
 </section>
 
 <!-- COMPRESOR -->
 <section id="panel-compresor" class="tool-panel">
-<div class="mb-2 text-xs text-orange-300/80 uppercase tracking-wider font-medium">Tamaño de archivo</div>
+<div class="mb-2 text-xs text-orange-300/80 uppercase tracking-wider font-medium">Peso</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Compresor de imágenes</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Re-exporta como JPEG. El deslizador indica la calidad percibida.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Reduce el tamaño re-exportando como JPEG con el nivel de calidad que elijas.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se redibuja la imagen y se codifica en JPEG. Menor calidad = más compresión y más pérdida visual. El original no se modifica hasta que descargas.</p></div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
 <input type="file" id="compFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
-<div>
-<div class="flex justify-between text-sm mb-1"><span class="text-steel">Calidad</span><span id="compQualLabel" class="text-white font-medium">Buena calidad</span></div>
+<div><div class="flex justify-between text-sm mb-1"><span class="text-steel">Calidad</span><span id="compQualLabel" class="text-white font-medium">Buena calidad</span></div>
 <input type="range" id="compQual" min="0.2" max="1" step="0.05" value="0.8" class="w-full" oninput="updateCompLabel()">
-<div class="flex justify-between text-[10px] text-steel/70 mt-1"><span>Muy baja</span><span>Baja</span><span>Media</span><span>Buena</span><span>Nítida</span></div>
-</div>
+<div class="flex justify-between text-[10px] text-steel/70 mt-1"><span>Muy baja</span><span>Baja</span><span>Media</span><span>Buena</span><span>Nítida</span></div></div>
 <button id="compBtn" onclick="compressImage()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Comprimir</button>
 <div id="compProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="compProgress" class="progress-bar"></div></div><p id="compStatus" class="text-sm text-steel"></p></div>
 <div id="compDownloadWrap" class="hidden"><button id="compDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm">Descargar comprimida</button></div>
 </div>
 </section>
 
-<!-- CONVERTIDOR MULTIMEDIA -->
+<!-- CONVERTIDOR -->
 <section id="panel-convertidor" class="tool-panel">
 <div class="mb-2 text-xs text-cyan-300/80 uppercase tracking-wider font-medium">Formatos</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Convertidor multimedia</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Conversión de imágenes offline (PNG, JPEG, WebP). Vídeo y otros formatos se irán añadiendo priorizando lo local.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Convierte imágenes entre PNG, JPEG y WebP en el navegador.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se carga la imagen, se pinta en canvas y se exporta al formato elegido. Offline tras cargar la página.</p></div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="convFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
-<select id="convFormat" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white">
-<option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option>
-</select>
+<select id="convFormat" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select>
 <button onclick="convertImage()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Convertir</button>
 <div id="convProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="convProgress" class="progress-bar"></div></div><p id="convStatus" class="text-sm text-steel"></p></div>
 <div id="convDownloadWrap" class="hidden"><button id="convDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm">Descargar</button></div>
@@ -324,7 +382,8 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-hashes" class="tool-panel">
 <div class="mb-2 text-xs text-lime-300/80 uppercase tracking-wider font-medium">Integridad</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Calculadora de hashes</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">SHA-256, SHA-384, SHA-512, SHA-1 y MD5. Todo local.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">SHA-256, SHA-384, SHA-512, SHA-1 y MD5 para comprobar que un archivo no ha cambiado.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>El navegador calcula el resumen criptográfico en local. Útil para verificar descargas o detectar cambios.</p></div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <div class="flex gap-4 text-sm">
 <label class="flex items-center gap-2"><input type="radio" name="hashSrc" value="file" checked class="accent-neon" onchange="toggleHashSrc()"> Archivo</label>
@@ -341,7 +400,8 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-passphrases" class="tool-panel">
 <div class="mb-2 text-xs text-pink-300/80 uppercase tracking-wider font-medium">Memorables</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Frases de paso</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Varias palabras aleatorias: fáciles de recordar y fuertes con 6–8 palabras.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Varias palabras aleatorias: fáciles de recordar y fuertes con 6–8 palabras.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se eligen palabras al azar de una lista local (estilo Diceware). La fortaleza crece con el número de palabras, no con símbolos raros.</p></div>
 <div class="grid lg:grid-cols-5 gap-6">
 <div class="lg:col-span-2 p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
 <div class="flex justify-between text-sm"><span class="text-steel">Palabras</span><span id="ppCountLabel" class="text-white font-medium">6</span></div>
@@ -364,14 +424,12 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-cifrado" class="tool-panel">
 <div class="mb-2 text-xs text-indigo-300/80 uppercase tracking-wider font-medium">Cifrado local</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Cifrado de texto</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">AES-GCM con clave derivada de tu contraseña (PBKDF2). Todo en el navegador; el texto no sale de tu equipo.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Cifra y descifra notas con una contraseña. Solo en tu equipo.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se deriva una clave AES-256 con PBKDF2 (100 000 iteraciones) y se cifra con AES-GCM. El resultado incluye salt e IV. Sin la contraseña no se puede recuperar el texto.</p></div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <textarea id="cipherText" class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto a cifrar o pegar cifrado"></textarea>
 <input type="password" id="cipherPass" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña">
-<div class="flex gap-3">
-<button onclick="encryptText()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Cifrar</button>
-<button onclick="decryptText()" class="px-5 py-3 rounded-xl border border-white/10 text-sm text-steel hover:text-white">Descifrar</button>
-</div>
+<div class="flex gap-3"><button onclick="encryptText()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Cifrar</button><button onclick="decryptText()" class="px-5 py-3 rounded-xl border border-white/10 text-sm text-steel">Descifrar</button></div>
 <textarea id="cipherOut" readonly class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box" placeholder="Resultado"></textarea>
 <button onclick="copyText('cipherOut')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar resultado</button>
 </div>
@@ -381,7 +439,8 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-urls" class="tool-panel">
 <div class="mb-2 text-xs text-teal-300/80 uppercase tracking-wider font-medium">Tracking</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Limpiar URLs</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Elimina parámetros de seguimiento habituales (utm_*, fbclid, gclid, etc.) de cualquier enlace.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Quita parámetros de seguimiento de cualquier enlace antes de compartirlo.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se parsea la URL y se eliminan utm_*, fbclid, gclid y otros identificadores habituales de campañas. Todo local.</p></div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="url" id="urlIn" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="https://…">
 <button onclick="cleanUrl()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Limpiar</button>
@@ -391,28 +450,12 @@ input[type=range]{accent-color:#0a84ff}
 </div>
 </section>
 
-<!-- TOKENS -->
-<section id="panel-tokens" class="tool-panel">
-<div class="mb-2 text-xs text-fuchsia-300/80 uppercase tracking-wider font-medium">Aleatoriedad</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Tokens seguros</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">UUID v4, hex y base64url generados con <code class="text-neon/90 text-xs">crypto.getRandomValues</code>.</p>
-<div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
-<select id="tokenType" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white">
-<option value="uuid">UUID v4</option>
-<option value="hex16">Hex 16 bytes</option>
-<option value="hex32">Hex 32 bytes</option>
-<option value="b64">Base64url 24 bytes</option>
-</select>
-<button id="tokenBtn" onclick="generateToken()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button>
-<div class="flex gap-2 items-center"><span id="tokenOut" class="text-lg text-white result-box break-all">—</span><button onclick="copyPlain('tokenOut')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel shrink-0">Copiar</button></div>
-</div>
-</section>
-
 <!-- IDS -->
 <section id="panel-acortador" class="tool-panel">
 <div class="mb-2 text-xs text-steel uppercase tracking-wider font-medium">Offline</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Identificadores cortos</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Códigos locales. Los acortadores públicos reciben la URL y suelen bloquear CORS.</p>
+<p class="text-steel mb-3 max-w-2xl text-sm">Códigos locales. Los acortadores públicos reciben la URL completa y suelen bloquear CORS.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Se genera un identificador aleatorio en el navegador. Opcionalmente se guarda una referencia en localStorage de este equipo.</p></div>
 <div class="grid lg:grid-cols-2 gap-6">
 <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
 <input type="text" id="shortInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Referencia opcional">
@@ -431,7 +474,7 @@ input[type=range]{accent-color:#0a84ff}
 <footer class="border-t border-white/5 py-8 mt-auto">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-steel">
 <p>© 2026 Privacidad Tools · Local · Sin rastros</p>
-<p class="flex gap-4"><a href="https://starkprivacy.github.io/privacidad/" class="hover:text-mist">privacidad.me</a><a href="https://boringprivacy.io" class="hover:text-mist">Academia</a><a href="https://github.com/StarkPrivacy/privacidad-tools" class="hover:text-mist">GitHub</a></p>
+<p class="flex gap-4"><button onclick="showTool('principios')" class="hover:text-mist">Principios</button><a href="https://boringprivacy.io" class="hover:text-mist">Academia</a><a href="https://github.com/StarkPrivacy/privacidad-tools" class="hover:text-mist">GitHub</a></p>
 </div>
 </footer>
 
@@ -453,75 +496,96 @@ const places=['norte','valle','risco','niebla','costa','paramo','sierra','bosque
 const syllables=['ka','zu','ri','mo','ne','xa','lu','qi','vo','ta','br','cl'];
 function generateName(){let style=document.getElementById('nameStyle').value;if(style==='aleatorio')style=pick(['sombra','tecnico','natural','corto','hex']);let name='';if(style==='sombra')name=pick(adj)+'_'+pick(noun)+(10+Math.floor(Math.random()*89));else if(style==='tecnico')name=pick(syllables)+pick(syllables)+pick(syllables)+'_'+randHex(2);else if(style==='natural')name=pick(animals)+'-'+pick(places)+(Math.floor(Math.random()*90)+10);else if(style==='corto')name=pick(syllables)+pick(syllables)+pick(['','x','z'])+(Math.floor(Math.random()*9)+1);else name='id_'+randHex(4);document.getElementById('nameResult').textContent=name;document.getElementById('nameBtn').textContent='Re-generar'}
 
-function generatePassword(){const len=+document.getElementById('pwdLen').value;let chars='';if(document.getElementById('pwdUpper').checked)chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';if(document.getElementById('pwdLower').checked)chars+='abcdefghijklmnopqrstuvwxyz';if(document.getElementById('pwdNum').checked)chars+='0123456789';if(document.getElementById('pwdSym').checked)chars+='!@#$%^&*()-_=+[]{}|;:,.<>?';if(!chars)return;const arr=new Uint32Array(len);crypto.getRandomValues(arr);let pwd='';for(let i=0;i<len;i++)pwd+=chars[arr[i]%chars.length];document.getElementById('pwdOutput').value=pwd;document.getElementById('pwdBtn').textContent='Re-generar';const entropy=Math.floor(len*Math.log2(chars.length));const s=entropy>=80?'muy fuerte':entropy>=60?'fuerte':entropy>=40?'aceptable':'débil';document.getElementById('pwdEntropy').textContent=`≈ ${entropy} bits · ${s}. Guárdala en Proton Pass o KeePassXC.`}
+function generatePassword(){const len=+document.getElementById('pwdLen').value;let chars='';if(document.getElementById('pwdUpper').checked)chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';if(document.getElementById('pwdLower').checked)chars+='abcdefghijklmnopqrstuvwxyz';if(document.getElementById('pwdNum').checked)chars+='0123456789';if(document.getElementById('pwdSym').checked)chars+='!@#$%^&*()-_=+[]{}|;:,.<>?';if(!chars)return;const arr=new Uint32Array(len);crypto.getRandomValues(arr);let pwd='';for(let i=0;i<len;i++)pwd+=chars[arr[i]%chars.length];document.getElementById('pwdOutput').value=pwd;document.getElementById('pwdBtn').textContent='Re-generar';const entropy=Math.floor(len*Math.log2(chars.length));const s=entropy>=80?'muy fuerte':entropy>=60?'fuerte':entropy>=40?'aceptable':'débil';document.getElementById('pwdEntropy').textContent=`≈ ${entropy} bits · ${s}`}
 
-function estimateCrack(){const pwd=document.getElementById('crackInput').value;const out=document.getElementById('crackResult');if(!pwd){out.innerHTML='';return}let charset=0;if(/[a-z]/.test(pwd))charset+=26;if(/[A-Z]/.test(pwd))charset+=26;if(/[0-9]/.test(pwd))charset+=10;if(/[^a-zA-Z0-9]/.test(pwd))charset+=32;if(charset<2)charset=26;const entropy=pwd.length*Math.log2(charset);const gps=1e10;const seconds=Math.pow(2,entropy)/gps;let human;if(seconds<1)human='Menos de 1 segundo';else if(seconds<60)human=seconds.toFixed(1)+' segundos';else if(seconds<3600)human=(seconds/60).toFixed(1)+' minutos';else if(seconds<86400)human=(seconds/3600).toFixed(1)+' horas';else if(seconds<31536000)human=(seconds/86400).toFixed(1)+' días';else if(seconds<31536000*100)human=(seconds/31536000).toFixed(1)+' años';else if(seconds<31536000*1e6)human=(seconds/31536000/1000).toFixed(0)+' mil años';else human='Prácticamente inviable (millones de años o más)';out.innerHTML=`<p><span class="text-mist">Longitud:</span> ${pwd.length} · <span class="text-mist">Charset ≈</span> ${charset}</p><p><span class="text-mist">Entropía ≈</span> ${entropy.toFixed(0)} bits</p><p class="text-white font-medium">Tiempo estimado (GPU offline ~10¹⁰ intentos/s): ${human}</p><p class="text-xs text-steel/80">Estimación orientativa. Diccionarios y reutilización reducen mucho el tiempo real.</p>`}
-
-const knownBreaches=[
-{name:'Collection #1',date:'2019-01',data:['Email','Contraseñas'],desc:'Agregación masiva de dumps previos (más de 700 millones de direcciones).'},
-{name:'LinkedIn',date:'2012-06',data:['Email','Contraseñas hasheadas'],desc:'Filtración histórica de la red profesional.'},
-{name:'Adobe',date:'2013-10',data:['Email','Contraseñas','Pistas'],desc:'Cuentas de Adobe con contraseñas y password hints.'},
-{name:'Dropbox',date:'2012-07',data:['Email','Contraseñas hasheadas'],desc:'Credenciales de usuarios de almacenamiento en la nube.'},
-{name:'MySpace',date:'2013-06',data:['Email','Contraseñas'],desc:'Red social antigua; credenciales reutilizadas durante años.'},
-{name:'Yahoo',date:'2013-08',data:['Email','Contraseñas','Nombres','Teléfonos'],desc:'Una de las mayores filtraciones de un proveedor de correo.'},
-{name:'Canva',date:'2019-05',data:['Email','Nombres','Ciudad','Contraseñas hasheadas'],desc:'Usuarios de la plataforma de diseño.'},
-{name:'Twitter / X',date:'2022-01',data:['Email','Nombre de usuario','Seguidores'],desc:'Scraping y filtración de datos de perfiles.'},
-{name:'Facebook',date:'2019-01',data:['Teléfono','Nombre','Email'],desc:'Datos de cientos de millones de perfiles expuestos.'},
-{name:'Marriott',date:'2018-11',data:['Email','Nombre','Pasaporte','Dirección'],desc:'Cadena hotelera; datos de reservas y documentos.'}
-];
-const scanSources=['Have I Been Pwned','Dumps públicos indexados','Incidentes corporativos','Pegados y pastes','Agregadores de inteligencia'];
+function estimateCrack(){const pwd=document.getElementById('crackInput').value;const out=document.getElementById('crackResult');if(!pwd){out.innerHTML='';return}let charset=0;if(/[a-z]/.test(pwd))charset+=26;if(/[A-Z]/.test(pwd))charset+=26;if(/[0-9]/.test(pwd))charset+=10;if(/[^a-zA-Z0-9]/.test(pwd))charset+=32;if(charset<2)charset=26;const entropy=pwd.length*Math.log2(charset);const seconds=Math.pow(2,entropy)/1e10;let human;if(seconds<1)human='Menos de 1 segundo';else if(seconds<60)human=seconds.toFixed(1)+' segundos';else if(seconds<3600)human=(seconds/60).toFixed(1)+' minutos';else if(seconds<86400)human=(seconds/3600).toFixed(1)+' horas';else if(seconds<31536000)human=(seconds/86400).toFixed(1)+' días';else if(seconds<31536000*100)human=(seconds/31536000).toFixed(1)+' años';else if(seconds<31536000*1e6)human=(seconds/31536000/1000).toFixed(0)+' mil años';else human='Prácticamente inviable';out.innerHTML=`<p>Longitud ${pwd.length} · charset ≈ ${charset} · ≈ ${entropy.toFixed(0)} bits</p><p class="text-white font-medium">Estimación offline: ${human}</p>`}
 
 async function runBreachScan(){
 const email=document.getElementById('breachEmail').value.trim();
 if(!email||!email.includes('@')){alert('Introduce un correo válido');return}
 const btn=document.getElementById('breachBtn'),wrap=document.getElementById('breachProgressWrap'),status=document.getElementById('breachStatus'),results=document.getElementById('breachResults');
 btn.disabled=true;wrap.classList.remove('hidden');results.classList.add('hidden');
-const bar=document.getElementById('breachProgress');bar.style.width='0%';
-for(let i=0;i<scanSources.length;i++){status.textContent='Revisando en '+scanSources[i]+'…';bar.style.width=((i+1)/scanSources.length*100)+'%';await new Promise(r=>setTimeout(r,500+Math.random()*350))}
-status.textContent='Análisis completado';btn.disabled=false;
-const h=email.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
-const count=2+(h%4);
-const selected=[];const used=new Set();
-while(selected.length<count){const idx=(h*7+selected.length*13)%knownBreaches.length;if(!used.has(idx)){used.add(idx);selected.push(knownBreaches[idx])}}
-document.getElementById('breachSummary').innerHTML=`<p class="text-red-300 font-medium text-sm mb-1">Se han encontrado referencias de filtración</p><p class="text-white text-lg font-semibold">${email.replace(/</g,'')}</p><p class="text-steel text-sm mt-1">${selected.length} filtración(es) en índices públicos revisados</p>`;
-document.getElementById('breachList').innerHTML=selected.map(b=>`<div class="p-4 rounded-xl bg-void border border-white/10"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><p class="text-white font-medium">${b.name}</p><span class="text-xs text-steel">${b.date}</span></div><p class="text-xs text-steel mb-2">${b.desc}</p><div class="flex flex-wrap gap-1.5">${b.data.map(d=>`<span class="text-[11px] px-2 py-0.5 rounded-md bg-red-500/15 text-red-300 border border-red-500/20">${d}</span>`).join('')}</div></div>`).join('');
-results.classList.remove('hidden')}
+const bar=document.getElementById('breachProgress');bar.style.width='15%';status.textContent='Consultando índices públicos…';
+try{
+bar.style.width='45%';
+const res=await fetch('https://api.xposedornot.com/v1/check-email/'+encodeURIComponent(email));
+bar.style.width='80%';status.textContent='Procesando resultados…';
+if(!res.ok)throw new Error('HTTP '+res.status);
+const data=await res.json();
+bar.style.width='100%';status.textContent='Listo';
+const list=(data.breaches&&data.breaches[0])?data.breaches[0]:[];
+const safeEmail=email.replace(/</g,'');
+if(!list.length){
+document.getElementById('breachSummary').innerHTML=`<div class="p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10"><p class="text-emerald-300 font-medium">Sin filtraciones en el índice consultado</p><p class="text-white mt-1">${safeEmail}</p></div>`;
+document.getElementById('breachList').innerHTML='<p class="text-steel text-sm">No aparece en las bases indexadas de esta consulta.</p>';
+}else{
+document.getElementById('breachSummary').innerHTML=`<div class="p-5 rounded-2xl border border-red-500/30 bg-red-500/10"><p class="text-red-300 font-medium text-sm">Se han encontrado filtraciones</p><p class="text-white text-lg font-semibold mt-1">${safeEmail}</p><p class="text-steel text-sm mt-1">${list.length} filtración(es) en el índice público</p></div>`;
+document.getElementById('breachList').innerHTML=list.map(n=>`<span class="breach-chip">${n.replace(/</g,'')}</span>`).join('');
+}
+document.getElementById('breachLinkXon').href='https://xposedornot.com/';
+results.classList.remove('hidden');
+}catch(e){
+bar.style.width='100%';status.textContent='No se pudo completar la consulta automática';
+document.getElementById('breachSummary').innerHTML=`<div class="p-5 rounded-2xl border border-amber-500/30 bg-amber-500/10"><p class="text-amber-200 font-medium">Consulta bloqueada o sin respuesta (red / CORS)</p><p class="text-steel text-sm mt-2">Puedes verificar el mismo correo en los enlaces de abajo. El plan de respuesta sigue siendo válido.</p></div>`;
+document.getElementById('breachList').innerHTML='';
+document.getElementById('breachLinkXon').href='https://xposedornot.com/';
+results.classList.remove('hidden');
+}
+btn.disabled=false}
 
-let metaBlob=null,metaName='';async function stripMetadata(){const f=document.getElementById('metaFile').files[0];if(!f)return;document.getElementById('metaProgressWrap').classList.remove('hidden');document.getElementById('metaDownloadWrap').classList.add('hidden');document.getElementById('metaStatus').textContent='Eliminando metadatos…';document.getElementById('metaBtn').disabled=true;animateProgress('metaProgress',700);try{const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);await new Promise(r=>setTimeout(r,400));c.toBlob(blob=>{metaBlob=blob;metaName=f.name.replace(/\.[^.]+$/,'')+'_sin_meta.png';document.getElementById('metaProgress').style.width='100%';document.getElementById('metaStatus').textContent='Listo.';document.getElementById('metaDownloadWrap').classList.remove('hidden');document.getElementById('metaBtn').disabled=false},'image/png')}catch(e){document.getElementById('metaStatus').textContent='Error: '+e.message;document.getElementById('metaBtn').disabled=false}}
+async function checkPwdLeak(){
+const pwd=document.getElementById('pwdLeakInput').value;if(!pwd)return;
+const out=document.getElementById('pwdLeakOut');out.textContent='Comprobando…';
+try{
+const buf=await crypto.subtle.digest('SHA-1',new TextEncoder().encode(pwd));
+const hash=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+const prefix=hash.slice(0,5),suffix=hash.slice(5);
+const res=await fetch('https://api.pwnedpasswords.com/range/'+prefix,{headers:{'Add-Padding':'true'}});
+const text=await res.text();
+let count=0;for(const line of text.split('\n')){const[h,c]=line.trim().split(':');if(h===suffix){count=parseInt(c,10);break}}
+if(count>0)out.innerHTML=`<p class="text-red-300 font-medium">Aparece en filtraciones conocidas</p><p class="text-steel mt-1">Visto unas <strong class="text-white">${count.toLocaleString('es')}</strong> veces en bases públicas. Cámbiala donde la uses.</p>`;
+else out.innerHTML=`<p class="text-emerald-300 font-medium">No aparece en el índice de contraseñas filtradas</p><p class="text-steel mt-1">Sigue siendo recomendable no reutilizarla.</p>`;
+}catch(e){out.textContent='Error de red: '+e.message}}
+
+let metaBlob=null,metaName='';
+async function stripMetadata(){const f=document.getElementById('metaFile').files[0];if(!f)return;document.getElementById('metaProgressWrap').classList.remove('hidden');document.getElementById('metaDownloadWrap').classList.add('hidden');document.getElementById('metaStatus').textContent='Eliminando metadatos…';document.getElementById('metaBtn').disabled=true;animateProgress('metaProgress',700);try{const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);await new Promise(r=>setTimeout(r,350));c.toBlob(blob=>{metaBlob=blob;metaName=f.name.replace(/\.[^.]+$/,'')+'_sin_meta.png';document.getElementById('metaProgress').style.width='100%';document.getElementById('metaStatus').textContent='Listo.';document.getElementById('metaDownloadWrap').classList.remove('hidden');document.getElementById('metaBtn').disabled=false},'image/png')}catch(e){document.getElementById('metaStatus').textContent='Error: '+e.message;document.getElementById('metaBtn').disabled=false}}
 document.getElementById('metaDownloadBtn').addEventListener('click',()=>{if(metaBlob)downloadBlob(metaBlob,metaName)});
 
-function showPdfSub(id){document.querySelectorAll('.pdf-sub').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.pdf-tab').forEach(t=>t.classList.remove('active'));document.getElementById('pdf-'+id).classList.add('active');document.querySelector(`.pdf-tab[data-pdf="${id}"]`).classList.add('active')}
+function showPdfSub(id){document.querySelectorAll('.pdf-sub').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.pdf-tab').forEach(t=>t.classList.remove('active'));document.getElementById('pdf-'+id).classList.add('active');document.querySelector('.pdf-tab[data-pdf="'+id+'"]').classList.add('active')}
+function parseRange(str,max){const pages=new Set();str.split(',').forEach(part=>{part=part.trim();if(part.includes('-')){const[a,b]=part.split('-').map(n=>parseInt(n,10));for(let i=Math.max(1,a||1);i<=Math.min(max,b||max);i++)pages.add(i-1)}else{const n=parseInt(part,10);if(n>=1&&n<=max)pages.add(n-1)}});return[...pages].sort((a,b)=>a-b)}
 async function pdfInfo(){const f=document.getElementById('pdfInfoFile').files[0];if(!f)return;const out=document.getElementById('pdfInfoOut');out.textContent='Analizando…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());out.innerHTML=`<p class="text-white">Páginas: <strong>${doc.getPageCount()}</strong></p><p>Título: ${doc.getTitle()||'—'}</p><p>Autor: ${doc.getAuthor()||'—'}</p><p>Tamaño: ${(f.size/1024).toFixed(1)} KB</p>`}catch(e){out.textContent='Error: '+e.message}}
-async function pdfMerge(){const files=document.getElementById('pdfMergeFiles').files;if(!files.length)return;const out=document.getElementById('pdfMergeOut');out.textContent='Combinando…';try{const merged=await PDFLib.PDFDocument.create();for(const f of files){const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const pages=await merged.copyPages(src,src.getPageIndices());pages.forEach(p=>merged.addPage(p))}const bytes=await merged.save();downloadBlob(new Blob([bytes],{type:'application/pdf'}),'combinado.pdf');out.textContent='Descargado: combinado.pdf ('+files.length+' archivos)'}catch(e){out.textContent='Error: '+e.message}}
-function parseRange(str,max){const pages=new Set();str.split(',').forEach(part=>{part=part.trim();if(part.includes('-')){const [a,b]=part.split('-').map(n=>parseInt(n,10));for(let i=Math.max(1,a);i<=Math.min(max,b);i++)pages.add(i-1)}else{const n=parseInt(part,10);if(n>=1&&n<=max)pages.add(n-1)}});return[...pages].sort((a,b)=>a-b)}
-async function pdfSplit(){const f=document.getElementById('pdfSplitFile').files[0];const range=document.getElementById('pdfSplitRange').value;if(!f||!range)return;const out=document.getElementById('pdfSplitOut');out.textContent='Extrayendo…';try{const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const idxs=parseRange(range,src.getPageCount());if(!idxs.length){out.textContent='Rango no válido';return}const dest=await PDFLib.PDFDocument.create();const pages=await dest.copyPages(src,idxs);pages.forEach(p=>dest.addPage(p));const bytes=await dest.save();downloadBlob(new Blob([bytes],{type:'application/pdf'}),'extraido.pdf');out.textContent=`Descargado: ${idxs.length} página(s)`}catch(e){out.textContent='Error: '+e.message}}
-async function pdfRotate(){const f=document.getElementById('pdfRotateFile').files[0];const angle=+document.getElementById('pdfRotateAngle').value;if(!f)return;const out=document.getElementById('pdfRotateOut');out.textContent='Rotando…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());doc.getPages().forEach(p=>{const cur=p.getRotation().angle;p.setRotation(PDFLib.degrees((cur+angle)%360))});const bytes=await doc.save();downloadBlob(new Blob([bytes],{type:'application/pdf'}),'rotado.pdf');out.textContent='Descargado: rotado.pdf'}catch(e){out.textContent='Error: '+e.message}}
+async function pdfMerge(){const files=document.getElementById('pdfMergeFiles').files;if(!files.length)return;const out=document.getElementById('pdfMergeOut');out.textContent='Combinando…';try{const merged=await PDFLib.PDFDocument.create();for(const f of files){const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());(await merged.copyPages(src,src.getPageIndices())).forEach(p=>merged.addPage(p))}downloadBlob(new Blob([await merged.save()],{type:'application/pdf'}),'combinado.pdf');out.textContent='Descargado ('+files.length+' archivos)'}catch(e){out.textContent='Error: '+e.message}}
+async function pdfSplit(){const f=document.getElementById('pdfSplitFile').files[0];const range=document.getElementById('pdfSplitRange').value;if(!f||!range)return;const out=document.getElementById('pdfSplitOut');out.textContent='Extrayendo…';try{const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const idxs=parseRange(range,src.getPageCount());if(!idxs.length){out.textContent='Rango no válido';return}const dest=await PDFLib.PDFDocument.create();(await dest.copyPages(src,idxs)).forEach(p=>dest.addPage(p));downloadBlob(new Blob([await dest.save()],{type:'application/pdf'}),'extraido.pdf');out.textContent='Descargado: '+idxs.length+' página(s)'}catch(e){out.textContent='Error: '+e.message}}
+async function pdfRotate(){const f=document.getElementById('pdfRotateFile').files[0];const angle=+document.getElementById('pdfRotateAngle').value;if(!f)return;const out=document.getElementById('pdfRotateOut');out.textContent='Rotando…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());doc.getPages().forEach(p=>p.setRotation(PDFLib.degrees((p.getRotation().angle+angle)%360)));downloadBlob(new Blob([await doc.save()],{type:'application/pdf'}),'rotado.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
+async function pdfRemove(){const f=document.getElementById('pdfRemoveFile').files[0];const range=document.getElementById('pdfRemoveRange').value;if(!f||!range)return;const out=document.getElementById('pdfRemoveOut');out.textContent='Procesando…';try{const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const remove=new Set(parseRange(range,src.getPageCount()));const keep=src.getPageIndices().filter(i=>!remove.has(i));const dest=await PDFLib.PDFDocument.create();(await dest.copyPages(src,keep)).forEach(p=>dest.addPage(p));downloadBlob(new Blob([await dest.save()],{type:'application/pdf'}),'sin_paginas.pdf');out.textContent='Descargado · quedan '+keep.length+' páginas'}catch(e){out.textContent='Error: '+e.message}}
+async function pdfReverse(){const f=document.getElementById('pdfReverseFile').files[0];if(!f)return;const out=document.getElementById('pdfReverseOut');out.textContent='Invirtiendo…';try{const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const idxs=src.getPageIndices().reverse();const dest=await PDFLib.PDFDocument.create();(await dest.copyPages(src,idxs)).forEach(p=>dest.addPage(p));downloadBlob(new Blob([await dest.save()],{type:'application/pdf'}),'invertido.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
+async function pdfSetMeta(){const f=document.getElementById('pdfMetaFile').files[0];if(!f)return;const out=document.getElementById('pdfMetaOut');out.textContent='Aplicando…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());const t=document.getElementById('pdfMetaTitle').value.trim();const a=document.getElementById('pdfMetaAuthor').value.trim();if(t)doc.setTitle(t);if(a)doc.setAuthor(a);downloadBlob(new Blob([await doc.save()],{type:'application/pdf'}),'metadatos.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
 
 function updateCompLabel(){const v=+document.getElementById('compQual').value;let label='Muy baja';if(v>=0.9)label='Nítida';else if(v>=0.75)label='Buena calidad';else if(v>=0.55)label='Calidad media';else if(v>=0.35)label='Calidad baja';document.getElementById('compQualLabel').textContent=label+' ('+v.toFixed(2)+')'}
 updateCompLabel();
-let compBlob=null,compName='';async function compressImage(){const f=document.getElementById('compFile').files[0];const q=+document.getElementById('compQual').value;if(!f)return;document.getElementById('compProgressWrap').classList.remove('hidden');document.getElementById('compDownloadWrap').classList.add('hidden');document.getElementById('compStatus').textContent='Comprimiendo…';document.getElementById('compBtn').disabled=true;animateProgress('compProgress',650);try{const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);await new Promise(r=>setTimeout(r,350));c.toBlob(blob=>{compBlob=blob;compName=f.name.replace(/\.[^.]+$/,'')+'_comprimido.jpg';const ratio=((1-blob.size/f.size)*100).toFixed(0);document.getElementById('compProgress').style.width='100%';document.getElementById('compStatus').textContent=`${(f.size/1024).toFixed(1)} KB → ${(blob.size/1024).toFixed(1)} KB (≈${ratio}% menos)`;document.getElementById('compDownloadWrap').classList.remove('hidden');document.getElementById('compBtn').disabled=false},'image/jpeg',q)}catch(e){document.getElementById('compStatus').textContent='Error: '+e.message;document.getElementById('compBtn').disabled=false}}
+let compBlob=null,compName='';
+async function compressImage(){const f=document.getElementById('compFile').files[0];const q=+document.getElementById('compQual').value;if(!f)return;document.getElementById('compProgressWrap').classList.remove('hidden');document.getElementById('compDownloadWrap').classList.add('hidden');document.getElementById('compStatus').textContent='Comprimiendo…';document.getElementById('compBtn').disabled=true;animateProgress('compProgress',650);try{const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);await new Promise(r=>setTimeout(r,300));c.toBlob(blob=>{compBlob=blob;compName=f.name.replace(/\.[^.]+$/,'')+'_comprimido.jpg';const ratio=((1-blob.size/f.size)*100).toFixed(0);document.getElementById('compProgress').style.width='100%';document.getElementById('compStatus').textContent=`${(f.size/1024).toFixed(1)} KB → ${(blob.size/1024).toFixed(1)} KB (≈${ratio}% menos)`;document.getElementById('compDownloadWrap').classList.remove('hidden');document.getElementById('compBtn').disabled=false},'image/jpeg',q)}catch(e){document.getElementById('compStatus').textContent='Error: '+e.message;document.getElementById('compBtn').disabled=false}}
 document.getElementById('compDownloadBtn').addEventListener('click',()=>{if(compBlob)downloadBlob(compBlob,compName)});
 
-let convBlob=null,convName='';async function convertImage(){const f=document.getElementById('convFile').files[0];const mime=document.getElementById('convFormat').value;if(!f)return;const ext=mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg';document.getElementById('convProgressWrap').classList.remove('hidden');document.getElementById('convDownloadWrap').classList.add('hidden');document.getElementById('convStatus').textContent='Convirtiendo…';animateProgress('convProgress',500);try{const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);await new Promise(r=>setTimeout(r,300));c.toBlob(blob=>{convBlob=blob;convName=f.name.replace(/\.[^.]+$/,'')+'.'+ext;document.getElementById('convProgress').style.width='100%';document.getElementById('convStatus').textContent=convName+' · '+(blob.size/1024).toFixed(1)+' KB';document.getElementById('convDownloadWrap').classList.remove('hidden')},mime,mime==='image/jpeg'?0.92:undefined)}catch(e){document.getElementById('convStatus').textContent='Error: '+e.message}}
+let convBlob=null,convName='';
+async function convertImage(){const f=document.getElementById('convFile').files[0];const mime=document.getElementById('convFormat').value;if(!f)return;const ext=mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg';document.getElementById('convProgressWrap').classList.remove('hidden');document.getElementById('convDownloadWrap').classList.add('hidden');document.getElementById('convStatus').textContent='Convirtiendo…';animateProgress('convProgress',500);try{const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);await new Promise(r=>setTimeout(r,250));c.toBlob(blob=>{convBlob=blob;convName=f.name.replace(/\.[^.]+$/,'')+'.'+ext;document.getElementById('convProgress').style.width='100%';document.getElementById('convStatus').textContent=convName+' · '+(blob.size/1024).toFixed(1)+' KB';document.getElementById('convDownloadWrap').classList.remove('hidden')},mime,mime==='image/jpeg'?0.92:undefined)}catch(e){document.getElementById('convStatus').textContent='Error: '+e.message}}
 document.getElementById('convDownloadBtn').addEventListener('click',()=>{if(convBlob)downloadBlob(convBlob,convName)});
 
-function md5(s){function cmn(q,a,b,x,s,t){a=add32(add32(a,q),add32(x,t));return add32((a<<s)|(a>>>32-s),b)}function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t)}function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t)}function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t)}function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t)}function add32(a,b){return(a+b)&0xFFFFFFFF}function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,0xd76aa478);d=ff(d,a,b,c,k[1],12,0xe8c7b756);c=ff(c,d,a,b,k[2],17,0x242070db);b=ff(b,c,d,a,k[3],22,0xc1bdceee);a=ff(a,b,c,d,k[4],7,0xf57c0faf);d=ff(d,a,b,c,k[5],12,0x4787c62a);c=ff(c,d,a,b,k[6],17,0xa8304613);b=ff(b,c,d,a,k[7],22,0xfd469501);a=ff(a,b,c,d,k[8],7,0x698098d8);d=ff(d,a,b,c,k[9],12,0x8b44f7af);c=ff(c,d,a,b,k[10],17,0xffff5bb1);b=ff(b,c,d,a,k[11],22,0x895cd7be);a=ff(a,b,c,d,k[12],7,0x6b901122);d=ff(d,a,b,c,k[13],12,0xfd987193);c=ff(c,d,a,b,k[14],17,0xa679438e);b=ff(b,c,d,a,k[15],22,0x49b40821);a=gg(a,b,c,d,k[1],5,0xf61e2562);d=gg(d,a,b,c,k[6],9,0xc040b340);c=gg(c,d,a,b,k[11],14,0x265e5a51);b=gg(b,c,d,a,k[0],20,0xe9b6c7aa);a=gg(a,b,c,d,k[5],5,0xd62f105d);d=gg(d,a,b,c,k[10],9,0x02441453);c=gg(c,d,a,b,k[15],14,0xd8a1e681);b=gg(b,c,d,a,k[4],20,0xe7d3fbc8);a=gg(a,b,c,d,k[9],5,0x21e1cde6);d=gg(d,a,b,c,k[14],9,0xc33707d6);c=gg(c,d,a,b,k[3],14,0xf4d50d87);b=gg(b,c,d,a,k[8],20,0x455a14ed);a=gg(a,b,c,d,k[13],5,0xa9e3e905);d=gg(d,a,b,c,k[2],9,0xfcefa3f8);c=gg(c,d,a,b,k[7],14,0x676f02d9);b=gg(b,c,d,a,k[12],20,0x8d2a4c8a);a=hh(a,b,c,d,k[5],4,0xfffa3942);d=hh(d,a,b,c,k[8],11,0x8771f681);c=hh(c,d,a,b,k[11],16,0x6d9d6122);b=hh(b,c,d,a,k[14],23,0xfde5380c);a=hh(a,b,c,d,k[1],4,0xa4beea44);d=hh(d,a,b,c,k[4],11,0x4bdecfa9);c=hh(c,d,a,b,k[7],16,0xf6bb4b60);b=hh(b,c,d,a,k[10],23,0xbebfbc70);a=hh(a,b,c,d,k[13],4,0x289b7ec6);d=hh(d,a,b,c,k[0],11,0xeaa127fa);c=hh(c,d,a,b,k[3],16,0xd4ef3085);b=hh(b,c,d,a,k[6],23,0x04881d05);a=hh(a,b,c,d,k[9],4,0xd9d4d039);d=hh(d,a,b,c,k[12],11,0xe6db99e5);c=hh(c,d,a,b,k[15],16,0x1fa27cf8);b=hh(b,c,d,a,k[2],23,0xc4ac5665);a=ii(a,b,c,d,k[0],6,0xf4292244);d=ii(d,a,b,c,k[7],10,0x432aff97);c=ii(c,d,a,b,k[14],15,0xab9423a7);b=ii(b,c,d,a,k[5],21,0xfc93a039);a=ii(a,b,c,d,k[12],6,0x655b59c3);d=ii(d,a,b,c,k[3],10,0x8f0ccc92);c=ii(c,d,a,b,k[10],15,0xffeff47d);b=ii(b,c,d,a,k[1],21,0x85845dd1);a=ii(a,b,c,d,k[8],6,0x6fa87e4f);d=ii(d,a,b,c,k[15],10,0xfe2ce6e0);c=ii(c,d,a,b,k[6],15,0xa3014314);b=ii(b,c,d,a,k[13],21,0x4e0811a1);a=ii(a,b,c,d,k[4],6,0xf7537e82);d=ii(d,a,b,c,k[11],10,0xbd3af235);c=ii(c,d,a,b,k[2],15,0x2ad7d2bb);b=ii(b,c,d,a,k[9],21,0xeb86d391);x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}function md5blk(s){const blks=[];for(let i=0;i<64;i+=4)blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);return blks}let n=s.length,state=[1732584193,-271733879,-1732584194,271733878],i;for(i=64;i<=n;i+=64)md5cycle(state,md5blk(s.substring(i-64,i)));s=s.substring(i-64);const tail=new Array(16).fill(0);for(i=0;i<s.length;i++)tail[i>>2]|=s.charCodeAt(i)<<((i%4)<<3);tail[i>>2]|=0x80<<((i%4)<<3);if(i>55){md5cycle(state,tail);for(i=0;i<16;i++)tail[i]=0}tail[14]=n*8;md5cycle(state,tail);return state.map(x=>{let s='';for(let j=0;j<4;j++)s+=((x>>(j*8))&0xff).toString(16).padStart(2,'0');return s}).join('')}
+function md5(s){function cmn(q,a,b,x,s,t){a=add32(add32(a,q),add32(x,t));return add32((a<<s)|(a>>>32-s),b)}function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t)}function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t)}function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t)}function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t)}function add32(a,b){return(a+b)&0xFFFFFFFF}function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);a=ff(a,b,c,d,k[12],7,1804603682);d=ff(d,a,b,c,k[13],12,-40341101);c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22,1236535329);a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(b,c,d,a,k[0],20,-373897302);a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(b,c,d,a,k[4],20,-405537848);a=gg(a,b,c,d,k[9],5,568446438);d=gg(d,a,b,c,k[14],9,-1019803690);c=gg(c,d,a,b,k[3],14,-187363961);b=gg(b,c,d,a,k[8],20,1163531501);a=gg(a,b,c,d,k[13],5,-1444681467);d=gg(d,a,b,c,k[2],9,-51403784);c=gg(c,d,a,b,k[7],14,1735328473);b=gg(b,c,d,a,k[12],20,-1926607734);a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[3],16,-722521979);b=hh(b,c,d,a,k[6],23,76029189);a=hh(a,b,c,d,k[9],4,-640364487);d=hh(d,a,b,c,k[12],11,-421815835);c=hh(c,d,a,b,k[15],16,530742520);b=hh(b,c,d,a,k[2],23,-995338651);a=ii(a,b,c,d,k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);a=ii(a,b,c,d,k[12],6,1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);c=ii(c,d,a,b,k[10],15,-1051523);b=ii(b,c,d,a,k[1],21,-2054922799);a=ii(a,b,c,d,k[8],6,1873313359);d=ii(d,a,b,c,k[15],10,-30611744);c=ii(c,d,a,b,k[6],15,-1560198380);b=ii(b,c,d,a,k[13],21,1309151649);a=ii(a,b,c,d,k[4],6,-145523070);d=ii(d,a,b,c,k[11],10,-1120210379);c=ii(c,d,a,b,k[2],15,718787259);b=ii(b,c,d,a,k[9],21,-343485551);x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}function md5blk(s){const blks=[];for(let i=0;i<64;i+=4)blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);return blks}let n=s.length,state=[1732584193,-271733879,-1732584194,271733878],i;for(i=64;i<=n;i+=64)md5cycle(state,md5blk(s.substring(i-64,i)));s=s.substring(i-64);const tail=new Array(16).fill(0);for(i=0;i<s.length;i++)tail[i>>2]|=s.charCodeAt(i)<<((i%4)<<3);tail[i>>2]|=0x80<<((i%4)<<3);if(i>55){md5cycle(state,tail);for(i=0;i<16;i++)tail[i]=0}tail[14]=n*8;md5cycle(state,tail);return state.map(x=>{let s='';for(let j=0;j<4;j++)s+=((x>>(j*8))&0xff).toString(16).padStart(2,'0');return s}).join('')}
 function toggleHashSrc(){const isFile=document.querySelector('input[name="hashSrc"]:checked').value==='file';document.getElementById('hashFile').classList.toggle('hidden',!isFile);document.getElementById('hashText').classList.toggle('hidden',isFile)}
-async function computeHashes(){const isFile=document.querySelector('input[name="hashSrc"]:checked').value==='file';let buffer,textForMd5='';if(isFile){const f=document.getElementById('hashFile').files[0];if(!f)return;buffer=await f.arrayBuffer();textForMd5=Array.from(new Uint8Array(buffer),b=>String.fromCharCode(b)).join('')}else{textForMd5=document.getElementById('hashText').value;if(!textForMd5)return;buffer=new TextEncoder().encode(textForMd5)}const out=document.getElementById('hashResults');out.classList.remove('hidden');out.innerHTML='Calculando…';let html='';for(const alg of['SHA-256','SHA-384','SHA-512','SHA-1']){const dig=await crypto.subtle.digest(alg,buffer);const hex=Array.from(new Uint8Array(dig)).map(b=>b.toString(16).padStart(2,'0')).join('');html+=`<div class="p-3 rounded-lg bg-void border border-white/5"><span class="text-steel text-xs">${alg}</span><p class="text-white break-all mt-1 select-all text-xs">${hex}</p></div>`}html+=`<div class="p-3 rounded-lg bg-void border border-white/5"><span class="text-steel text-xs">MD5</span><p class="text-white break-all mt-1 select-all text-xs">${md5(textForMd5)}</p></div>`;out.innerHTML=html}
+async function computeHashes(){const isFile=document.querySelector('input[name="hashSrc"]:checked').value==='file';let buffer,textForMd5='';if(isFile){const f=document.getElementById('hashFile').files[0];if(!f)return;buffer=await f.arrayBuffer();textForMd5=Array.from(new Uint8Array(buffer),b=>String.fromCharCode(b)).join('')}else{textForMd5=document.getElementById('hashText').value;if(!textForMd5)return;buffer=new TextEncoder().encode(textForMd5)}const out=document.getElementById('hashResults');out.classList.remove('hidden');let html='';for(const alg of['SHA-256','SHA-384','SHA-512','SHA-1']){const dig=await crypto.subtle.digest(alg,buffer);html+=`<div class="p-3 rounded-lg bg-void border border-white/5"><span class="text-steel text-xs">${alg}</span><p class="text-white break-all mt-1 select-all text-xs">${Array.from(new Uint8Array(dig)).map(b=>b.toString(16).padStart(2,'0')).join('')}</p></div>`}html+=`<div class="p-3 rounded-lg bg-void border border-white/5"><span class="text-steel text-xs">MD5</span><p class="text-white break-all mt-1 select-all text-xs">${md5(textForMd5)}</p></div>`;out.innerHTML=html}
 
 const wordList=['alpha','bravo','campo','delta','eco','faro','gato','hielo','isla','jade','kilo','luna','mar','nube','oro','piedra','rio','sol','tigre','uva','viento','yate','zorro','agua','bosque','casa','estrella','fuego','grano','hoja','jardin','lago','monte','norte','oceano','puente','roca','sierra','torre','valle','cipher','node','relay','shadow','quiet','bright','silent','rapid','calm','storm','nieve','rayo','bruma','cumbre','sendero','refugio','clave','sello'];
-function generatePassphrase(){const n=+document.getElementById('ppCount').value;const sep=document.getElementById('ppSep').value;const cap=document.getElementById('ppCap').checked;const addNum=document.getElementById('ppNum').checked;const arr=new Uint32Array(n);crypto.getRandomValues(arr);const words=[];for(let i=0;i<n;i++){let w=wordList[arr[i]%wordList.length];if(cap)w=w.charAt(0).toUpperCase()+w.slice(1);words.push(w)}let phrase=words.join(sep);if(addNum){const num=new Uint32Array(1);crypto.getRandomValues(num);phrase+=sep+(num[0]%90+10)}document.getElementById('ppResult').textContent=phrase;document.getElementById('ppBtn').textContent='Re-generar';const bits=Math.floor(n*Math.log2(wordList.length))+(addNum?6:0);document.getElementById('ppStrength').textContent=`Entropía ≈ ${bits} bits · ${n} palabras`+(addNum?' + número':'')}
+function generatePassphrase(){const n=+document.getElementById('ppCount').value;const sep=document.getElementById('ppSep').value;const cap=document.getElementById('ppCap').checked;const addNum=document.getElementById('ppNum').checked;const arr=new Uint32Array(n);crypto.getRandomValues(arr);const words=[];for(let i=0;i<n;i++){let w=wordList[arr[i]%wordList.length];if(cap)w=w.charAt(0).toUpperCase()+w.slice(1);words.push(w)}let phrase=words.join(sep);if(addNum){const num=new Uint32Array(1);crypto.getRandomValues(num);phrase+=sep+(num[0]%90+10)}document.getElementById('ppResult').textContent=phrase;document.getElementById('ppBtn').textContent='Re-generar';document.getElementById('ppStrength').textContent=`Entropía ≈ ${Math.floor(n*Math.log2(wordList.length))+(addNum?6:0)} bits`}
 
 async function deriveKey(pass,salt){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),{name:'PBKDF2'},false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:100000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
-async function encryptText(){const text=document.getElementById('cipherText').value;const pass=document.getElementById('cipherPass').value;if(!text||!pass)return;const salt=crypto.getRandomValues(new Uint8Array(16));const iv=crypto.getRandomValues(new Uint8Array(12));const key=await deriveKey(pass,salt);const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(text));const packed=new Uint8Array(salt.length+iv.length+ct.byteLength);packed.set(salt,0);packed.set(iv,16);packed.set(new Uint8Array(ct),28);document.getElementById('cipherOut').value=btoa(String.fromCharCode(...packed))}
-async function decryptText(){try{const packed=Uint8Array.from(atob(document.getElementById('cipherText').value),c=>c.charCodeAt(0));const pass=document.getElementById('cipherPass').value;const salt=packed.slice(0,16);const iv=packed.slice(16,28);const data=packed.slice(28);const key=await deriveKey(pass,salt);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,data);document.getElementById('cipherOut').value=new TextDecoder().decode(pt)}catch{document.getElementById('cipherOut').value='Error: contraseña incorrecta o datos inválidos'}}
+async function encryptText(){const text=document.getElementById('cipherText').value,pass=document.getElementById('cipherPass').value;if(!text||!pass)return;const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const key=await deriveKey(pass,salt);const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(text));const packed=new Uint8Array(28+ct.byteLength);packed.set(salt,0);packed.set(iv,16);packed.set(new Uint8Array(ct),28);document.getElementById('cipherOut').value=btoa(String.fromCharCode(...packed))}
+async function decryptText(){try{const packed=Uint8Array.from(atob(document.getElementById('cipherText').value),c=>c.charCodeAt(0));const key=await deriveKey(document.getElementById('cipherPass').value,packed.slice(0,16));const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:packed.slice(16,28)},key,packed.slice(28));document.getElementById('cipherOut').value=new TextDecoder().decode(pt)}catch{document.getElementById('cipherOut').value='Error: contraseña incorrecta o datos inválidos'}}
 
-const trackParams=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','gclid','gclsrc','dclid','msclkid','mc_eid','mc_cid','yclid','_ga','_gl','ref','ref_src','ref_url','si','igshid','s','t','spm','scm'];
-function cleanUrl(){const raw=document.getElementById('urlIn').value.trim();if(!raw)return;try{const u=new URL(raw);let removed=0;trackParams.forEach(p=>{if(u.searchParams.has(p)){u.searchParams.delete(p);removed++}});[...u.searchParams.keys()].forEach(k=>{if(k.startsWith('utm_')||k.startsWith('fb_')){u.searchParams.delete(k);removed++}});document.getElementById('urlOut').value=u.toString();document.getElementById('urlStatus').textContent=removed?`Eliminados ${removed} parámetro(s) de tracking.`:'No se detectaron parámetros de tracking conocidos.'}catch{document.getElementById('urlStatus').textContent='URL no válida'}}
+const trackParams=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','gclid','gclsrc','dclid','msclkid','mc_eid','mc_cid','yclid','_ga','_gl','ref','ref_src','si','igshid'];
+function cleanUrl(){const raw=document.getElementById('urlIn').value.trim();if(!raw)return;try{const u=new URL(raw);let removed=0;trackParams.forEach(p=>{if(u.searchParams.has(p)){u.searchParams.delete(p);removed++}});[...u.searchParams.keys()].forEach(k=>{if(k.startsWith('utm_')){u.searchParams.delete(k);removed++}});document.getElementById('urlOut').value=u.toString();document.getElementById('urlStatus').textContent=removed?`Eliminados ${removed} parámetro(s).`:'Sin parámetros de tracking conocidos.'}catch{document.getElementById('urlStatus').textContent='URL no válida'}}
 
-function generateToken(){const type=document.getElementById('tokenType').value;let out='';if(type==='uuid')out=crypto.randomUUID();else if(type==='hex16')out=randHex(16);else if(type==='hex32')out=randHex(32);else{const a=new Uint8Array(24);crypto.getRandomValues(a);out=btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}document.getElementById('tokenOut').textContent=out;document.getElementById('tokenBtn').textContent='Re-generar'}
-
-function generateShortId(){const ref=document.getElementById('shortInput').value.trim();const id=randHex(3)+'-'+pick(['a','k','m','x','z'])+(Math.floor(Math.random()*900)+100);document.getElementById('shortOutput').textContent=id;if(ref){try{const map=JSON.parse(localStorage.getItem('priv_short_map')||'{}');map[id]=ref;localStorage.setItem('priv_short_map',JSON.stringify(map));document.getElementById('shortStatus').textContent='Guardado en este navegador.'}catch{document.getElementById('shortStatus').textContent='Generado.'}}else document.getElementById('shortStatus').textContent='Solo local · sin servidor.'}
+function generateShortId(){const ref=document.getElementById('shortInput').value.trim();const id=randHex(3)+'-'+pick(['a','k','m','x','z'])+(Math.floor(Math.random()*900)+100);document.getElementById('shortOutput').textContent=id;if(ref){try{const map=JSON.parse(localStorage.getItem('priv_short_map')||'{}');map[id]=ref;localStorage.setItem('priv_short_map',JSON.stringify(map));document.getElementById('shortStatus').textContent='Guardado en este navegador.'}catch{document.getElementById('shortStatus').textContent='Generado.'}}else document.getElementById('shortStatus').textContent='Solo local.'}
 </script>
 </body>
 </html>
