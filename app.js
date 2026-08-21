@@ -7,7 +7,36 @@ function loadImage(file){return new Promise((res,rej)=>{const img=new Image();im
 function animateProgress(id,ms,done){const bar=document.getElementById(id);if(!bar)return;let p=0;bar.style.width='0%';const step=100/(ms/40);const t=setInterval(()=>{p=Math.min(100,p+step+Math.random()*3);bar.style.width=p+'%';if(p>=100){clearInterval(t);if(done)done()}},40)}
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
 function randHex(n){const a=new Uint8Array(n);crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('')}
-function fmtTime(sec){if(sec<1)return'Ves de 1 s';if(sec<60)return sec.toFixed(1)+' s';if(sec<3600)return(sec/60).toFixed(1)+' min';if(sec<86400)return(sec/3600).toFixed(1)+' h';if(sec<31536000)return(sec/86400).toFixed(1)+' días';if(sec<31536000*100)return(sec/31536000).toFixed(1)+' años';if(sec<31536000*1e6)return(sec/31536000/1e3).toFixed(0)+' mil años';return'Prácticamente inviable'}
+function fmtTime(sec){if(sec<1)return'Menos de 1 s';if(sec<60)return sec.toFixed(1)+' s';if(sec<3600)return(sec/60).toFixed(1)+' min';if(sec<86400)return(sec/3600).toFixed(1)+' h';if(sec<31536000)return(sec/86400).toFixed(1)+' días';if(sec<31536000*100)return(sec/31536000).toFixed(1)+' años';if(sec<31536000*1e6)return(sec/31536000/1e3).toFixed(0)+' mil años';return'Prácticamente inviable'}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+const DATA_ES={
+'email addresses':'Direcciones de correo','emails':'Correos','email':'Correo electrónico','usernames':'Nombres de usuario','username':'Nombre de usuario',
+'passwords':'Contraseñas','password':'Contraseña','password hints':'Pistas de contraseña','hashed passwords':'Contraseñas hasheadas',
+'names':'Nombres','full names':'Nombres completos','first names':'Nombres','last names':'Apellidos',
+'phone numbers':'Números de teléfono','phone':'Teléfono','mobile':'Móvil',
+'physical addresses':'Direcciones postales','addresses':'Direcciones','geographic locations':'Ubicaciones geográficas','ip addresses':'Direcciones IP','ip address':'Dirección IP',
+'dates of birth':'Fechas de nacimiento','date of birth':'Fecha de nacimiento','genders':'Géneros','gender':'Género',
+'social media profiles':'Perfiles de redes sociales','profile photos':'Fotos de perfil','photos':'Fotos',
+'credit cards':'Tarjetas de crédito','credit card info':'Datos de tarjetas','partial credit card data':'Datos parciales de tarjetas',
+'government issued ids':'Documentos de identidad','nationalities':'Nacionalidades','passport numbers':'Números de pasaporte',
+'job titles':'Cargos laborales','employers':'Empleadores','education levels':'Nivel educativo',
+'private messages':'Mensajes privados','chat logs':'Registros de chat','instant messenger identities':'Identidades de mensajería',
+'auth tokens':'Tokens de autenticación','security questions and answers':'Preguntas de seguridad','security questions':'Preguntas de seguridad',
+'browser user agent details':'User-Agent del navegador','device information':'Información del dispositivo','device information and identifiers':'Identificadores de dispositivo',
+'salary information':'Información salarial','income levels':'Niveles de ingresos','purchases':'Compras','order history':'Historial de pedidos',
+'social security numbers':'Números de la seguridad social','tax id numbers':'Números fiscales',
+'data_passwords':'Contraseñas','data_email addresses':'Correos','data_phone numbers':'Teléfonos','data_physical addresses':'Direcciones',
+'data_dates of birth':'Fechas de nacimiento','data_ip addresses':'IPs','data_names':'Nombres','data_usernames':'Usuarios',
+'data_auth tokens':'Tokens de autenticación','data_geographic locations':'Ubicaciones','data_private messages':'Mensajes privados',
+'data_instant messenger identities':'Mensajería instantánea'
+};
+function translateType(raw){const t=(raw||'').trim();if(!t)return'';const key=t.toLowerCase().replace(/^data[_\s]/i,'').trim();const full=t.toLowerCase();
+if(DATA_ES[full])return DATA_ES[full];
+if(DATA_ES[key])return DATA_ES[key];
+if(DATA_ES['data_'+key])return DATA_ES['data_'+key];
+for(const[k,v] of Object.entries(DATA_ES)){if(full.includes(k)||key.includes(k.replace(/^data_/,'')))return v}
+return t.charAt(0).toUpperCase()+t.slice(1).replace(/_/g,' ')}
 
 const adj=['silencioso','oculto','libre','nocturno','criptico','gris','nube','zorro','cuervo','veloz','seguro','privado','lejano','frio'];
 const noun=['viajero','guardian','fantasma','nodo','relay','cifrado','proxy','torre','oasis','horizonte','refugio','codigo','mapa','eco'];
@@ -30,18 +59,20 @@ if(/[^a-zA-Z0-9]/.test(pwd))charset+=32;
 if(charset<2)charset=26;
 const entropy=pwd.length*Math.log2(charset);
 const scenarios=[
-  {name:'GPU moderna (offline)',rate:1e10,hint:'Ataque con tarjeta gráfica dedicada'},
+  {name:'GPU moderna (offline)',rate:1e10,hint:'Tarjeta gráfica dedicada'},
   {name:'PC de sobremesa',rate:5e8,hint:'CPU + GPU integrada o media'},
   {name:'Portátil / tablet',rate:5e7,hint:'Hardware doméstico típico'},
   {name:'Teléfono (script)',rate:1e6,hint:'Ataque lento desde móvil'}
 ];
-let cards=scenarios.map(s=>{
-  const sec=Math.pow(2,entropy)/s.rate;
-  const t=fmtTime(sec);
-  const tone=sec<3600?'text-red-300':sec<31536000?'text-amber-300':'text-emerald-300';
-  return `<div class="p-3 rounded-xl bg-void border border-white/10"><p class="text-xs text-steel mb-0.5">${s.name}</p><p class="${tone} font-semibold text-sm">${t}</p><p class="text-[11px] text-steel/80 mt-1">${s.hint}</p></div>`;
-}).join('');
-out.innerHTML=`<div class="flex flex-wrap gap-3 text-xs text-steel mb-3"><span class="px-2 py-1 rounded-lg bg-white/5">Longitud ${pwd.length}</span><span class="px-2 py-1 rounded-lg bg-white/5">Charset ≈ ${charset}</span><span class="px-2 py-1 rounded-lg bg-white/5">≈ ${entropy.toFixed(0)} bits</span></div><div class="grid sm:grid-cols-2 gap-2">${cards}</div><p class="text-[11px] text-steel mt-3">Estimación de fuerza bruta offline (sin diccionario). Si la contraseña es una palabra real o reutilizada, el tiempo real puede ser mucho menor.</p>`;
+const cards=scenarios.map(s=>{const sec=Math.pow(2,entropy)/s.rate;const t=fmtTime(sec);const tone=sec<3600?'text-red-300':sec<31536000?'text-amber-300':'text-emerald-300';return `<div class="p-3 rounded-xl bg-void border border-white/10"><p class="text-xs text-steel mb-0.5">${s.name}</p><p class="${tone} font-semibold text-sm">${t}</p><p class="text-[11px] text-steel/80 mt-1">${s.hint}</p></div>`}).join('');
+out.innerHTML=`<div class="flex flex-wrap gap-3 text-xs text-steel mb-3"><span class="px-2 py-1 rounded-lg bg-white/5">Longitud ${pwd.length}</span><span class="px-2 py-1 rounded-lg bg-white/5">Charset ≈ ${charset}</span><span class="px-2 py-1 rounded-lg bg-white/5">≈ ${entropy.toFixed(0)} bits</span></div><div class="grid sm:grid-cols-2 gap-2">${cards}</div><p class="text-[11px] text-steel mt-3">Fuerza bruta offline (sin diccionario). Si es una palabra real o reutilizada, el tiempo real puede ser mucho menor.</p>`;
+}
+
+function briefEs(name,data,year){
+  const types=(data||'').split(/[;|,]/).map(x=>translateType(x.trim())).filter(Boolean);
+  const top=types.slice(0,5).join(', ')||'datos de cuenta';
+  const y=year?` (aprox. ${year})`:'';
+  return `Filtración asociada a «${name||'un servicio'}»${y}. Datos típicos en este incidente: ${top}. Trata cualquier contraseña de ese servicio (y reutilizaciones) como comprometida.`;
 }
 
 async function runBreachScan(){
@@ -51,21 +82,12 @@ const btn=document.getElementById('breachBtn'),wrap=document.getElementById('bre
 btn.disabled=true;wrap.classList.remove('hidden');results.classList.add('hidden');
 const bar=document.getElementById('breachProgress');bar.style.width='12%';status.textContent='Consultando índices públicos…';
 const safeEmail=email.replace(/</g,'');
-const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const brief=(d,name,data,year)=>{
-  const t=(d||'').trim();
-  if(t.length>40){let s=t;if(s.length>260)s=s.slice(0,257)+'…';return s;}
-  const types=(data||'').split(/[;|,]/).map(x=>x.trim()).filter(Boolean);
-  const top=types.slice(0,5).join(', ')||'datos de cuenta';
-  const y=year?` (aprox. ${year})`:'';
-  return `Filtración asociada a «${name||'un servicio'}»${y}. Datos típicos en este incidente: ${top}. Trata cualquier contraseña de ese servicio (y reutilizaciones) como comprometida.`;
-};
 try{
   bar.style.width='40%';status.textContent='Obteniendo detalle de cada incidente…';
   const res=await fetch('https://api.xposedornot.com/v1/breach-analytics?email='+encodeURIComponent(email));
   if(res.status===429){
     bar.style.width='100%';status.textContent='Límite de consultas alcanzado';
-    document.getElementById('breachSummary').innerHTML=`<div class="p-5 rounded-2xl border border-amber-500/30 bg-amber-500/10"><p class="text-amber-200 font-medium">Demasiadas consultas desde esta red</p><p class="text-steel text-sm mt-2">El índice limita peticiones por IP (≈25/h). Espera un rato e inténtalo de nuevo. Cada persona consulta desde su propia dirección, no compartís el cupo con el resto de usuarios de la web.</p></div>`;
+    document.getElementById('breachSummary').innerHTML=`<div class="p-5 rounded-2xl border border-amber-500/30 bg-amber-500/10"><p class="text-amber-200 font-medium">Demasiadas consultas desde esta red</p><p class="text-steel text-sm mt-2">El índice limita peticiones por IP (≈25/h). Cada persona consulta desde su propia dirección.</p></div>`;
     document.getElementById('breachList').innerHTML='';
     results.classList.remove('hidden');btn.disabled=false;return;
   }
@@ -85,26 +107,16 @@ try{
       const year=esc(b.xposed_date||'—');
       const domain=esc(b.domain||'');
       const types=(b.xposed_data||'').split(/[;|,]/).map(x=>x.trim()).filter(Boolean);
-      const chips=types.map(t=>`<span class="inline-flex text-[11px] px-2.5 py-1 rounded-lg bg-red-500/15 text-red-200 border border-red-500/25 font-medium">${esc(t)}</span>`).join('')||'<span class="text-xs text-steel">Tipos de dato no especificados</span>';
-      const exp=esc(brief(b.details,b.breach,b.xposed_data,b.xposed_date));
+      const chips=types.map(t=>`<span class="inline-flex text-[11px] px-2.5 py-1 rounded-lg bg-red-500/15 text-red-200 border border-red-500/25 font-medium">${esc(translateType(t))}</span>`).join('')||'<span class="text-xs text-steel">Tipos de dato no especificados</span>';
+      const exp=esc(briefEs(b.breach,b.xposed_data,b.xposed_date));
       const rec=b.xposed_records?Number(b.xposed_records).toLocaleString('es'):null;
       return `<article class="p-4 sm:p-5 rounded-2xl bg-void border border-white/10 space-y-3">
         <div class="flex flex-wrap items-start justify-between gap-2">
-          <div>
-            <p class="text-[11px] uppercase tracking-wider text-steel mb-0.5">Dónde se filtró</p>
-            <p class="text-white font-semibold text-base">${name}</p>
-            ${domain?`<p class="text-xs text-steel mt-0.5">${domain}</p>`:''}
-          </div>
-          <div class="text-right">
-            <p class="text-[11px] uppercase tracking-wider text-steel mb-0.5">Cuándo</p>
-            <p class="text-mist font-medium">${year}</p>
-          </div>
+          <div><p class="text-[11px] uppercase tracking-wider text-steel mb-0.5">Dónde se filtró</p><p class="text-white font-semibold text-base">${name}</p>${domain?`<p class="text-xs text-steel mt-0.5">${domain}</p>`:''}</div>
+          <div class="text-right"><p class="text-[11px] uppercase tracking-wider text-steel mb-0.5">Cuándo</p><p class="text-mist font-medium">${year}</p></div>
         </div>
         ${rec?`<div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/5"><span class="text-xs text-steel">Registros en el incidente</span><span class="text-white font-semibold text-sm">~${rec}</span></div>`:''}
-        <div>
-          <p class="text-[11px] uppercase tracking-wider text-steel mb-1.5">Qué se filtró</p>
-          <div class="flex flex-wrap gap-1.5">${chips}</div>
-        </div>
+        <div><p class="text-[11px] uppercase tracking-wider text-steel mb-1.5">Qué se filtró</p><div class="flex flex-wrap gap-1.5">${chips}</div></div>
         <p class="text-xs text-steel leading-relaxed border-t border-white/5 pt-3">${exp}</p>
       </article>`;
     }).join('');
@@ -129,13 +141,79 @@ const prefix=hash.slice(0,5),suffix=hash.slice(5);
 const res=await fetch('https://api.pwnedpasswords.com/range/'+prefix,{headers:{'Add-Padding':'true'}});
 const text=await res.text();
 let count=0;for(const line of text.split('\n')){const[h,c]=line.trim().split(':');if(h===suffix){count=parseInt(c,10);break}}
-if(count>0)out.innerHTML=`<p class="text-red-300 font-medium">Aparece en filtraciones conocidas</p><p class="text-steel mt-1">Visto unas <strong class="text-white">${count.toLocaleString('es')}</strong> veces en bases públicas. Cámbiala donde la uses.</p>`;
+if(count>0)out.innerHTML=`<p class="text-red-300 font-medium">Aparece en filtraciones conocidas</p><p class="text-steel mt-1">Visto unas <strong class="text-white">${count.toLocaleString('es')}</strong> veces. Cámbiala donde la uses.</p>`;
 else out.innerHTML=`<p class="text-emerald-300 font-medium">No aparece en el índice de contraseñas filtradas</p><p class="text-steel mt-1">Sigue siendo recomendable no reutilizarla.</p>`;
 }catch(e){out.textContent='Error de red: '+e.message}}
 
 let metaBlob=null,metaName='';
 async function stripMetadata(){const f=document.getElementById('metaFile').files[0];if(!f)return;document.getElementById('metaProgressWrap').classList.remove('hidden');document.getElementById('metaDownloadWrap').classList.add('hidden');document.getElementById('metaStatus').textContent='Eliminando metadatos…';document.getElementById('metaBtn').disabled=true;animateProgress('metaProgress',700);try{const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);await new Promise(r=>setTimeout(r,350));c.toBlob(blob=>{metaBlob=blob;metaName=f.name.replace(/\.[^.]+$/,'')+'_sin_meta.png';document.getElementById('metaProgress').style.width='100%';document.getElementById('metaStatus').textContent='Listo.';document.getElementById('metaDownloadWrap').classList.remove('hidden');document.getElementById('metaBtn').disabled=false},'image/png')}catch(e){document.getElementById('metaStatus').textContent='Error: '+e.message;document.getElementById('metaBtn').disabled=false}}
 document.getElementById('metaDownloadBtn')?.addEventListener('click',()=>{if(metaBlob)downloadBlob(metaBlob,metaName)});
+
+async function readMetadata(){
+const f=document.getElementById('metaReadFile').files[0];if(!f)return;
+const out=document.getElementById('metaReadOut');out.innerHTML='<p class="text-steel text-sm">Leyendo…</p>';
+const rows=[];
+rows.push(['Nombre',f.name]);
+rows.push(['Tipo',f.type||'desconocido']);
+rows.push(['Tamaño',(f.size/1024).toFixed(1)+' KB']);
+if(f.lastModified)rows.push(['Modificado',new Date(f.lastModified).toLocaleString('es')]);
+try{
+if(f.type.startsWith('image/')){
+  const img=await loadImage(f);
+  rows.push(['Dimensiones',img.naturalWidth+' × '+img.naturalHeight+' px']);
+  const buf=await f.arrayBuffer();
+  const view=new DataView(buf);
+  if(f.type==='image/jpeg'||f.name.toLowerCase().endsWith('.jpg')||f.name.toLowerCase().endsWith('.jpeg')){
+    const exif=parseJpegExif(view);
+    Object.entries(exif).forEach(([k,v])=>rows.push([k,String(v)]));
+  }else{
+    rows.push(['EXIF','Solo se extrae EXIF detallado de JPEG en esta herramienta']);
+  }
+}
+}catch(e){rows.push(['Error',e.message])}
+out.innerHTML=rows.map(([k,v])=>`<div class="flex flex-wrap gap-2 py-2 border-b border-white/5"><span class="text-xs text-steel w-36 shrink-0">${esc(k)}</span><span class="text-sm text-white break-all">${esc(v)}</span></div>`).join('')||'<p class="text-steel text-sm">Sin datos</p>';
+}
+function parseJpegExif(view){
+  const out={};
+  try{
+    if(view.getUint16(0)!==0xFFD8)return out;
+    let offset=2;
+    while(offset<view.byteLength-4){
+      if(view.getUint8(offset)!==0xFF)break;
+      const marker=view.getUint8(offset+1);
+      const len=view.getUint16(offset+2);
+      if(marker===0xE1){
+        const start=offset+4;
+        if(view.getUint32(start)===0x45786966){
+          const tiff=start+6;
+          const le=view.getUint16(tiff)===0x4949;
+          const get16=o=>le?view.getUint16(o,true):view.getUint16(o);
+          const get32=o=>le?view.getUint32(o,true):view.getUint32(o);
+          const ifd0=tiff+get32(tiff+4);
+          const n=get16(ifd0);
+          const tags={0x010F:'Fabricante',0x0110:'Modelo',0x0131:'Software',0x0132:'Fecha',0x0100:'Ancho (EXIF)',0x0101:'Alto (EXIF)'};
+          for(let i=0;i<n;i++){
+            const e=ifd0+2+i*12;
+            const tag=get16(e);
+            const type=get16(e+2);
+            const count=get32(e+4);
+            let val=get32(e+8);
+            if(tags[tag]&&type===2){
+              let s='',po=count>4?tiff+val:e+8;
+              for(let j=0;j<count-1&&po+j<view.byteLength;j++){const c=view.getUint8(po+j);if(!c)break;s+=String.fromCharCode(c)}
+              if(s)out[tags[tag]]=s;
+            }else if(tags[tag]&&(type===3||type===4)){out[tags[tag]]=String(val)}
+          }
+          if(Object.keys(out).length)out['GPS / ubicación']='Puede estar presente en el archivo; usa el limpiador si vas a compartir la foto';
+        }
+        break;
+      }
+      if(marker===0xDA)break;
+      offset+=2+len;
+    }
+  }catch(_){}
+  return out;
+}
 
 function showPdfSub(id){document.querySelectorAll('.pdf-sub').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.pdf-tab').forEach(t=>t.classList.remove('active'));document.getElementById('pdf-'+id)?.classList.add('active');document.querySelector('.pdf-tab[data-pdf="'+id+'"]')?.classList.add('active')}
 function parseRange(str,max){const pages=new Set();str.split(',').forEach(part=>{part=part.trim();if(part.includes('-')){const[a,b]=part.split('-').map(n=>parseInt(n,10));for(let i=Math.max(1,a||1);i<=Math.min(max,b||max);i++)pages.add(i-1)}else{const n=parseInt(part,10);if(n>=1&&n<=max)pages.add(n-1)}});return[...pages].sort((a,b)=>a-b)}
@@ -146,7 +224,7 @@ async function pdfRotate(){const f=document.getElementById('pdfRotateFile').file
 async function pdfRemove(){const f=document.getElementById('pdfRemoveFile').files[0];const range=document.getElementById('pdfRemoveRange').value;if(!f||!range)return;const out=document.getElementById('pdfRemoveOut');out.textContent='Procesando…';try{const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const remove=new Set(parseRange(range,src.getPageCount()));const keep=src.getPageIndices().filter(i=>!remove.has(i));const dest=await PDFLib.PDFDocument.create();(await dest.copyPages(src,keep)).forEach(p=>dest.addPage(p));downloadBlob(new Blob([await dest.save()],{type:'application/pdf'}),'sin_paginas.pdf');out.textContent='Descargado · quedan '+keep.length+' páginas'}catch(e){out.textContent='Error: '+e.message}}
 async function pdfReverse(){const f=document.getElementById('pdfReverseFile').files[0];if(!f)return;const out=document.getElementById('pdfReverseOut');out.textContent='Invirtiendo…';try{const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const idxs=src.getPageIndices().reverse();const dest=await PDFLib.PDFDocument.create();(await dest.copyPages(src,idxs)).forEach(p=>dest.addPage(p));downloadBlob(new Blob([await dest.save()],{type:'application/pdf'}),'invertido.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
 async function pdfSetMeta(){const f=document.getElementById('pdfMetaFile').files[0];if(!f)return;const out=document.getElementById('pdfMetaOut');out.textContent='Aplicando…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());const t=document.getElementById('pdfMetaTitle').value.trim();const a=document.getElementById('pdfMetaAuthor').value.trim();if(t)doc.setTitle(t);if(a)doc.setAuthor(a);downloadBlob(new Blob([await doc.save()],{type:'application/pdf'}),'metadatos.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
-async function pdfWatermark(){const f=document.getElementById('pdfWmFile').files[0];const text=(document.getElementById('pdfWmText').value||'CONFIDENCIAL').trim();if(!f)return;const out=document.getElementById('pdfWmOut');out.textContent='Aplicando marca…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());const font=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);const pages=doc.getPages();pages.forEach(page=>{const{width,height}=page.getSize();const size=Math.min(width,height)*0.08;page.drawText(text,{x:width*0.15,y:height*0.45,size,font,color:PDFLib.rgb(0.75,0.75,0.75),opacity:0.35,rotate:PDFLib.degrees(35)})});downloadBlob(new Blob([await doc.save()],{type:'application/pdf'}),'marca_agua.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
+async function pdfWatermark(){const f=document.getElementById('pdfWmFile').files[0];const text=(document.getElementById('pdfWmText').value||'CONFIDENCIAL').trim();if(!f)return;const out=document.getElementById('pdfWmOut');out.textContent='Aplicando marca…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());const font=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);doc.getPages().forEach(page=>{const{width,height}=page.getSize();const size=Math.min(width,height)*0.08;page.drawText(text,{x:width*0.15,y:height*0.45,size,font,color:PDFLib.rgb(0.75,0.75,0.75),opacity:0.35,rotate:PDFLib.degrees(35)})});downloadBlob(new Blob([await doc.save()],{type:'application/pdf'}),'marca_agua.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
 async function pdfPageNumbers(){const f=document.getElementById('pdfNumFile').files[0];if(!f)return;const out=document.getElementById('pdfNumOut');out.textContent='Numerando…';try{const doc=await PDFLib.PDFDocument.load(await f.arrayBuffer());const font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);const pages=doc.getPages();pages.forEach((page,i)=>{const{width}=page.getSize();const label=`${i+1} / ${pages.length}`;const tw=font.widthOfTextAtSize(label,10);page.drawText(label,{x:(width-tw)/2,y:18,size:10,font,color:PDFLib.rgb(0.4,0.4,0.4)})});downloadBlob(new Blob([await doc.save()],{type:'application/pdf'}),'numerado.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
 async function pdfBlank(){const f=document.getElementById('pdfBlankFile').files[0];const after=+document.getElementById('pdfBlankAfter').value||0;if(!f)return;const out=document.getElementById('pdfBlankOut');out.textContent='Insertando…';try{const src=await PDFLib.PDFDocument.load(await f.arrayBuffer());const dest=await PDFLib.PDFDocument.create();const idxs=src.getPageIndices();const first=Math.min(Math.max(0,after),idxs.length);const before=idxs.slice(0,first);const afterIdx=idxs.slice(first);if(before.length)(await dest.copyPages(src,before)).forEach(p=>dest.addPage(p));const sample=src.getPage(0);const{width,height}=sample.getSize();dest.addPage([width,height]);if(afterIdx.length)(await dest.copyPages(src,afterIdx)).forEach(p=>dest.addPage(p));downloadBlob(new Blob([await dest.save()],{type:'application/pdf'}),'con_pagina_en_blanco.pdf');out.textContent='Descargado'}catch(e){out.textContent='Error: '+e.message}}
 
@@ -169,12 +247,37 @@ function generatePassphrase(){const n=+document.getElementById('ppCount').value;
 async function deriveKey(pass,salt){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),{name:'PBKDF2'},false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:100000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
 async function encryptText(){const text=document.getElementById('cipherText').value,pass=document.getElementById('cipherPass').value;if(!text||!pass)return;const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const key=await deriveKey(pass,salt);const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(text));const packed=new Uint8Array(28+ct.byteLength);packed.set(salt,0);packed.set(iv,16);packed.set(new Uint8Array(ct),28);document.getElementById('cipherOut').value=btoa(String.fromCharCode(...packed))}
 async function decryptText(){try{const packed=Uint8Array.from(atob(document.getElementById('cipherText').value),c=>c.charCodeAt(0));const key=await deriveKey(document.getElementById('cipherPass').value,packed.slice(0,16));const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:packed.slice(16,28)},key,packed.slice(28));document.getElementById('cipherOut').value=new TextDecoder().decode(pt)}catch{document.getElementById('cipherOut').value='Error: contraseña incorrecta o datos inválidos'}}
+function b64Encode(){const t=document.getElementById('b64In').value;try{document.getElementById('b64Out').value=btoa(unescape(encodeURIComponent(t)));document.getElementById('b64Status').textContent='Codificado'}catch{document.getElementById('b64Status').textContent='Error al codificar'}}
+function b64Decode(){const t=document.getElementById('b64In').value;try{document.getElementById('b64Out').value=decodeURIComponent(escape(atob(t)));document.getElementById('b64Status').textContent='Decodificado'}catch{document.getElementById('b64Status').textContent='Base64 no válido'}}
 
 const trackParams=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','gclid','gclsrc','dclid','msclkid','mc_eid','mc_cid','yclid','_ga','_gl','ref','ref_src','si','igshid'];
 function cleanUrl(){const raw=document.getElementById('urlIn').value.trim();if(!raw)return;try{const u=new URL(raw);let removed=0;trackParams.forEach(p=>{if(u.searchParams.has(p)){u.searchParams.delete(p);removed++}});[...u.searchParams.keys()].forEach(k=>{if(k.startsWith('utm_')){u.searchParams.delete(k);removed++}});document.getElementById('urlOut').value=u.toString();document.getElementById('urlStatus').textContent=removed?`Eliminados ${removed} parámetro(s).`:'Sin parámetros de tracking conocidos.'}catch{document.getElementById('urlStatus').textContent='URL no válida'}}
 
 function generateShortId(){const ref=document.getElementById('shortInput').value.trim();const id=randHex(3)+'-'+pick(['a','k','m','x','z'])+(Math.floor(Math.random()*900)+100);document.getElementById('shortOutput').textContent=id;if(ref){try{const map=JSON.parse(localStorage.getItem('priv_short_map')||'{}');map[id]=ref;localStorage.setItem('priv_short_map',JSON.stringify(map));document.getElementById('shortStatus').textContent='Guardado en este navegador.'}catch{document.getElementById('shortStatus').textContent='Generado.'}}else document.getElementById('shortStatus').textContent='Solo local.'}
 
-function generateUuid(){const a=new Uint8Array(16);crypto.getRandomValues(a);a[6]=(a[6]&0x0f)|0x40;a[8]=(a[8]&0x3f)|0x80;const h=Array.from(a,b=>b.toString(16).padStart(2,'0')).join('');document.getElementById('uuidOut').textContent=h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);document.getElementById('uuidBtn').textContent='Re-generar'}
-function b64Encode(){const t=document.getElementById('b64In').value;try{document.getElementById('b64Out').value=btoa(unescape(encodeURIComponent(t)));document.getElementById('b64Status').textContent='Codificado'}catch{document.getElementById('b64Status').textContent='Error al codificar'}}
-function b64Decode(){const t=document.getElementById('b64In').value;try{document.getElementById('b64Out').value=decodeURIComponent(escape(atob(t)));document.getElementById('b64Status').textContent='Decodificado'}catch{document.getElementById('b64Status').textContent='Base64 no válido'}}
+let stegoBlob=null;
+async function stegoHide(){
+const f=document.getElementById('stegoFile').files[0];const msg=document.getElementById('stegoMsg').value;if(!f||!msg){document.getElementById('stegoStatus').textContent='Elige imagen y escribe un mensaje';return}
+const status=document.getElementById('stegoStatus');status.textContent='Ocultando…';
+try{
+const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);const data=ctx.getImageData(0,0,c.width,c.height);const px=data.data;
+const bytes=new TextEncoder().encode(msg);const len=bytes.length;if((len+4)*8>px.length/4){status.textContent='Mensaje demasiado largo para esta imagen';return}
+const header=new Uint8Array(4);new DataView(header.buffer).setUint32(0,len);
+const payload=new Uint8Array(4+len);payload.set(header,0);payload.set(bytes,4);
+let bit=0;for(let i=0;i<payload.length;i++){for(let b=7;b>=0;b--){const idx=bit*4;px[idx]=(px[idx]&0xFE)|((payload[i]>>b)&1);bit++}}
+ctx.putImageData(data,0,0);c.toBlob(blob=>{stegoBlob=blob;document.getElementById('stegoDownloadWrap').classList.remove('hidden');status.textContent='Listo. Descarga la imagen PNG con el mensaje oculto.';},'image/png');
+}catch(e){status.textContent='Error: '+e.message}
+}
+async function stegoReveal(){
+const f=document.getElementById('stegoRevealFile').files[0];if(!f)return;
+const out=document.getElementById('stegoRevealOut');out.textContent='Extrayendo…';
+try{
+const img=await loadImage(f);const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);const px=ctx.getImageData(0,0,c.width,c.height).data;
+const readByte=(startBit)=>{let v=0;for(let b=0;b<8;b++){v=(v<<1)|(px[(startBit+b)*4]&1)}return v};
+const len=(readByte(0)<<24)|(readByte(8)<<16)|(readByte(16)<<8)|readByte(24);
+if(len<=0||len>500000||(len+4)*8>px.length/4){out.textContent='No se detectó un mensaje válido en esta imagen.';return}
+const bytes=new Uint8Array(len);for(let i=0;i<len;i++)bytes[i]=readByte(32+i*8);
+out.textContent=new TextDecoder().decode(bytes);
+}catch(e){out.textContent='Error: '+e.message}
+}
+document.getElementById('stegoDownloadBtn')?.addEventListener('click',()=>{if(stegoBlob)downloadBlob(stegoBlob,'mensaje_oculto.png')});
