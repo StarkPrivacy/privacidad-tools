@@ -1,27 +1,25 @@
 # Privacidad Tools
 
-Utilidades de privacidad **client-side / offline-first**.
-
-Misma paleta que privacidad.me (`void`, `panel`, `neon`, `steel`, `mist`). Diseño diferenciado: sin sidebar, herramientas a ancho completo, descripciones educativas y prioridad al procesamiento local.
+Kit de privacidad **local** en el navegador.
 
 ## Herramientas
 
-- Generador de nombres (varios estilos distintos, un resultado + Re-generar)
-- Generador de contraseñas (entropía estimada, consejos de gestores)
-- Centro de filtraciones de correo (hub informativo + contexto de acción)
-- Limpiador de metadatos (barra de progreso + descarga)
-- Identificadores cortos offline (sin CORS ni servicios externos)
-- Compresor de imágenes (progreso + descarga bajo demanda)
-- Convertidor (imágenes offline; base para más tipos)
-- Calculadora de hashes (SHA-256 / SHA-1)
-- Frases de paso (passphrases memorables)
+- Filtraciones de correo (escaneo multi-fuente + resultados de filtraciones públicas)
+- Contraseñas + calculadora de tiempo de rotura
+- Nombres / alias
+- Metadatos de imágenes
+- **Herramientas para .pdf** (info, combinar, dividir, rotar — pdf-lib)
+- Compresor de imágenes
+- Convertidor multimedia (imágenes)
+- Hashes (SHA-256/384/512, SHA-1, MD5)
+- Frases de paso
+- Cifrado de texto (AES-GCM)
+- Limpiador de URLs de tracking
+- Generador de tokens seguros
+- Identificadores cortos offline
 
-## Por qué el acortador público fallaba
+Paleta alineada con privacidad.me. Procesamiento en el dispositivo.
 
-Los acortadores externos reciben la URL en sus servidores. Además, muchas APIs no permiten peticiones cross-origin desde el navegador (CORS). Por eso se sustituyó por identificadores generados y, si se desea, guardados solo en `localStorage` del usuario.
+## Pages
 
-## Uso
-
-Activa GitHub Pages (branch `main`, root). URL típica: `https://starkprivacy.github.io/privacidad-tools/`.
-
-Una vez cargada la página, la mayoría de herramientas funcionan sin conexión.
+`https://starkprivacy.github.io/privacidad-tools/`
