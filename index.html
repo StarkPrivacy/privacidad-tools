@@ -38,22 +38,22 @@ input[type=range]{accent-color:#0a84ff}
 </div>
 <div id="mobileTools" class="hidden lg:hidden border-t border-white/5 bg-void px-4 py-3 space-y-1 max-h-80 overflow-y-auto text-sm">
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('home')">Inicio</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('principios')">Principios</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('filtraciones')">Filtraciones</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('passwords')">Contraseñas</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('pwdleak')">¿Contraseña filtrada?</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('nombres')">Nombres</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('metadatos')">Metadatos</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('pdf')">Herramientas PDF</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('metadatos')">Limpiar metadatos</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('metalectura')">Leer metadatos</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('pdf')">PDF</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('compresor')">Compresor</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('convertidor')">Convertidor multimedia</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('convertidor')">Convertidor</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('hashes')">Hashes</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('passphrases')">Frases de paso</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('cifrado')">Cifrado de texto</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('cifrado')">Cifrado / Base64</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('stego')">Esteganografía</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('urls')">Limpiar URLs</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('uuid')">UUID</button>
-<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('base64')">Base64</button>
 <button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('acortador')">IDs cortos</button>
+<button class="block w-full text-left px-3 py-2 rounded-lg text-steel hover:bg-white/5" onclick="showTool('principios')">Principios</button>
 </div>
 </header>
 <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -65,23 +65,23 @@ input[type=range]{accent-color:#0a84ff}
 <span class="inline-flex text-xs font-medium px-3 py-1 rounded-full bg-white/5 text-steel border border-white/10">Sin cuentas · Sin rastreo</span>
 </div>
 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">Tu kit de privacidad.<br class="hidden sm:block"> En tu navegador.</h1>
-<p class="text-steel text-base sm:text-lg max-w-2xl leading-relaxed">Herramientas que trabajan en tu dispositivo. Sin cuentas, sin telemetría y sin subir archivos a un servidor ajeno. Una vez cargada la página, casi todo sigue funcionando sin internet.</p>
+<p class="text-steel text-base sm:text-lg max-w-2xl leading-relaxed">Herramientas en tu dispositivo. Sin cuentas, sin telemetría y sin subir archivos a un servidor ajeno.</p>
 </div>
 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
 <button onclick="showTool('filtraciones')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Filtraciones de correo</h2><p class="text-sm text-steel mt-0.5">Dónde, qué y cuántos registros.</p></div><svg class="w-5 h-5 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div></button>
-<button onclick="showTool('passwords')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Contraseñas</h2><p class="text-sm text-steel mt-0.5">Generar y estimar rotura por dispositivo.</p></div><svg class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></button>
+<button onclick="showTool('passwords')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Contraseñas</h2><p class="text-sm text-steel mt-0.5">Generar y estimar rotura.</p></div><svg class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></button>
 <button onclick="showTool('pwdleak')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">¿Contraseña filtrada?</h2><p class="text-sm text-steel mt-0.5">Comprobación k-anónima.</p></div><svg class="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div></button>
 <button onclick="showTool('nombres')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Nombres / alias</h2><p class="text-sm text-steel mt-0.5">Identidades operativas.</p></div><svg class="w-5 h-5 text-violet-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></button>
 <button onclick="showTool('metadatos')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Limpiar metadatos</h2><p class="text-sm text-steel mt-0.5">GPS y EXIF fuera.</p></div><svg class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></button>
+<button onclick="showTool('metalectura')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Leer metadatos</h2><p class="text-sm text-steel mt-0.5">Qué lleva la foto antes de limpiarla.</p></div><svg class="w-5 h-5 text-amber-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div></button>
 <button onclick="showTool('pdf')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Herramientas para .pdf</h2><p class="text-sm text-steel mt-0.5">Combinar, marca de agua, números…</p></div><svg class="w-5 h-5 text-sky-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></button>
 <button onclick="showTool('compresor')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Compresor</h2><p class="text-sm text-steel mt-0.5">Menos peso, control de calidad.</p></div><svg class="w-5 h-5 text-orange-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div></button>
 <button onclick="showTool('convertidor')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Convertidor multimedia</h2><p class="text-sm text-steel mt-0.5">PNG · JPEG · WebP.</p></div><svg class="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></div></button>
 <button onclick="showTool('hashes')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Hashes</h2><p class="text-sm text-steel mt-0.5">Integridad de archivos.</p></div><svg class="w-5 h-5 text-lime-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div></button>
 <button onclick="showTool('passphrases')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Frases de paso</h2><p class="text-sm text-steel mt-0.5">Memorables y resistentes.</p></div><svg class="w-5 h-5 text-pink-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div></button>
-<button onclick="showTool('cifrado')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Cifrado de texto</h2><p class="text-sm text-steel mt-0.5">AES-GCM local.</p></div><svg class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div></button>
+<button onclick="showTool('cifrado')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Cifrado y Base64</h2><p class="text-sm text-steel mt-0.5">AES-GCM y codificación local.</p></div><svg class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div></button>
+<button onclick="showTool('stego')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Esteganografía</h2><p class="text-sm text-steel mt-0.5">Ocultar texto en una imagen.</p></div><svg class="w-5 h-5 text-fuchsia-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><circle cx="12" cy="12" r="9" opacity=".3"/></svg></div></button>
 <button onclick="showTool('urls')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Limpiar URLs</h2><p class="text-sm text-steel mt-0.5">Sin utm ni trackers.</p></div><svg class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div></button>
-<button onclick="showTool('uuid')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">UUID v4</h2><p class="text-sm text-steel mt-0.5">Identificadores únicos locales.</p></div><svg class="w-5 h-5 text-fuchsia-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div></button>
-<button onclick="showTool('base64')" class="group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/30 hover:glow-blue transition"><div class="flex items-start justify-between gap-3"><div><h2 class="font-semibold text-white">Base64</h2><p class="text-sm text-steel mt-0.5">Codificar y decodificar texto.</p></div><svg class="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div></button>
 </div>
 <p class="text-center text-sm text-steel"><button onclick="showTool('principios')" class="text-neon hover:underline">Cómo pensamos estas herramientas →</button></p>
 </section>
@@ -89,49 +89,38 @@ input[type=range]{accent-color:#0a84ff}
 <section id="panel-principios" class="tool-panel">
 <div class="mb-2 text-xs text-neon/80 uppercase tracking-wider font-medium">Stark Privacy</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-4">Principios</h1>
-<div class="max-w-2xl space-y-6 text-sm text-steel leading-relaxed">
-<p class="text-mist">Utilidades en el navegador, sin cuentas ni telemetría. Casi todo funciona offline tras cargar la página.</p>
-<div class="p-5 rounded-2xl bg-panel border border-white/5 space-y-2"><p class="text-white font-medium">Prioridades</p><ul class="list-disc list-inside space-y-1"><li>Procesamiento en el dispositivo</li><li>Sin cuentas ni perfiles</li><li>Código público</li></ul></div>
-<p><a href="https://boringprivacy.io" class="text-neon" target="_blank" rel="noopener">boringprivacy.io</a> · <a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon" target="_blank" rel="noopener">privacidad.news</a></p>
-</div>
+<div class="max-w-2xl space-y-4 text-sm text-steel"><p class="text-mist">Utilidades en el navegador, sin cuentas ni telemetría.</p><p><a href="https://boringprivacy.io" class="text-neon" target="_blank" rel="noopener">boringprivacy.io</a> · <a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon" target="_blank" rel="noopener">privacidad.news</a></p></div>
 </section>
 
 <section id="panel-filtraciones" class="tool-panel">
 <div class="mb-2 text-xs text-red-300/80 uppercase tracking-wider font-medium">Exposición de correo</div>
 <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Centro de filtraciones</h1>
-<p class="text-steel mb-3 max-w-2xl text-sm">Muestra <strong class="text-mist">dónde</strong>, <strong class="text-mist">qué datos</strong>, <strong class="text-mist">cuándo</strong> y <strong class="text-mist">cuántos registros</strong> tenía cada incidente.</p>
-<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Solo se envía el correo. La consulta sale de <strong class="text-mist">tu IP</strong>: cada persona tiene su propio cupo (≈25/h), no se comparte con el resto de usuarios de la web.</p></div>
+<p class="text-steel mb-3 max-w-2xl text-sm">Dónde, qué datos (en español), cuándo y cuántos registros.</p>
+<div class="p-4 rounded-xl bg-panel border border-white/5 mb-6 max-w-2xl text-xs text-steel"><p class="text-mist font-medium mb-1">Cómo funciona</p><p>Solo se envía el correo desde <strong class="text-mist">tu IP</strong> (≈25 consultas/h por persona).</p></div>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 mb-8 max-w-xl space-y-4">
-<label class="block text-sm text-steel">Correo a revisar</label>
 <input type="email" id="breachEmail" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="tu@correo.com">
-<button id="breachBtn" onclick="runBreachScan()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm hover:bg-neon-glow">Revisar filtraciones</button>
-<div id="breachProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="breachProgress" class="progress-bar"></div></div><p id="breachStatus" class="text-sm text-neon">Iniciando…</p></div>
+<button id="breachBtn" onclick="runBreachScan()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Revisar filtraciones</button>
+<div id="breachProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="breachProgress" class="progress-bar"></div></div><p id="breachStatus" class="text-sm text-neon"></p></div>
 </div>
 <div id="breachResults" class="hidden space-y-6 mb-10">
 <div id="breachSummary"></div>
 <div><h3 class="text-white font-medium mb-3">Detalle de cada filtración</h3><div id="breachList" class="space-y-3 max-h-[32rem] overflow-y-auto pr-1"></div></div>
-<div class="p-5 rounded-2xl border border-neon/20 bg-neon/5">
-<h3 class="text-white font-medium mb-3">Plan de respuesta</h3>
+<div class="p-5 rounded-2xl border border-neon/20 bg-neon/5"><h3 class="text-white font-medium mb-3">Plan de respuesta</h3>
 <ol class="text-sm text-steel space-y-3 list-none">
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">0</span><span><strong class="text-mist">Antes de que sea tarde.</strong> <a href="https://boringprivacy.io" class="text-neon hover:underline" target="_blank" rel="noopener">boringprivacy.io</a></span></li>
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">1</span><span>Cambia contraseñas del servicio y de sitios donde la reutilizaras.</span></li>
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">2</span><span>Activa 2FA en correo y cuentas críticas.</span></li>
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">3</span><span>Gestor: <a href="https://privtr.ee/@stark" class="text-neon hover:underline" target="_blank" rel="noopener">Proton Pass</a> o <a href="https://keepassxc.org/" class="text-neon hover:underline" target="_blank" rel="noopener">KeePassXC</a>.</span></li>
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">4</span><span>Noticias: <a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon hover:underline" target="_blank" rel="noopener">privacidad.news</a>.</span></li>
-<li class="flex gap-3"><span class="text-neon font-bold shrink-0">5</span><span>Revisa sesiones y dispositivos vinculados.</span></li>
-</ol>
-</div>
+<li class="flex gap-3"><span class="text-neon font-bold">0</span><span><a href="https://boringprivacy.io" class="text-neon" target="_blank" rel="noopener">boringprivacy.io</a></span></li>
+<li class="flex gap-3"><span class="text-neon font-bold">1</span><span>Cambia contraseñas afectadas y reutilizadas.</span></li>
+<li class="flex gap-3"><span class="text-neon font-bold">2</span><span>Activa 2FA.</span></li>
+<li class="flex gap-3"><span class="text-neon font-bold">3</span><span><a href="https://privtr.ee/@stark" class="text-neon" target="_blank" rel="noopener">Proton Pass</a> o <a href="https://keepassxc.org/" class="text-neon" target="_blank" rel="noopener">KeePassXC</a>.</span></li>
+<li class="flex gap-3"><span class="text-neon font-bold">4</span><span><a href="https://github.com/StarkPrivacy/privacidad-news" class="text-neon" target="_blank" rel="noopener">privacidad.news</a></span></li>
+</ol></div>
 </div>
 </section>
 
 <section id="panel-passwords" class="tool-panel">
 <div class="mb-2 text-xs text-emerald-300/80 uppercase tracking-wider font-medium">Secretos fuertes</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Contraseñas</h1>
-<p class="text-steel mb-6 max-w-2xl text-sm">Primero genera una contraseña fuerte. Después, si quieres, estima cuánto costaría romperla en distintos dispositivos.</p>
-
+<h1 class="text-2xl sm:text-3xl font-bold text-white mb-6">Contraseñas</h1>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 mb-8 max-w-2xl space-y-4">
-<div class="flex items-center gap-2 mb-1"><span class="text-xs font-medium px-2 py-0.5 rounded-md bg-neon/15 text-neon">1 · Generar</span></div>
-<div class="p-3 rounded-xl bg-void/50 border border-white/5 text-xs text-steel mb-2">Aleatoriedad del sistema (<code class="text-neon/80">crypto.getRandomValues</code>). Nada se envía.</div>
+<span class="text-xs font-medium px-2 py-0.5 rounded-md bg-neon/15 text-neon">1 · Generar</span>
 <div class="flex justify-between text-sm"><span class="text-steel">Longitud</span><span id="pwdLenLabel" class="text-white font-medium">24</span></div>
 <input type="range" id="pwdLen" min="12" max="64" value="24" class="w-full" oninput="document.getElementById('pwdLenLabel').textContent=this.value">
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
@@ -141,23 +130,19 @@ input[type=range]{accent-color:#0a84ff}
 <label class="flex items-center gap-2"><input type="checkbox" id="pwdSym" checked class="accent-neon"> Símbolos</label>
 </div>
 <button id="pwdBtn" onclick="generatePassword()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button>
-<div class="flex gap-2"><input type="text" id="pwdOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white" placeholder="Contraseña"><button onclick="copyText('pwdOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel">Copiar</button></div>
+<div class="flex gap-2"><input type="text" id="pwdOutput" readonly class="flex-1 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm result-box text-white"><button onclick="copyText('pwdOutput')" class="px-4 rounded-xl border border-white/10 text-sm text-steel">Copiar</button></div>
 <p id="pwdEntropy" class="text-sm text-steel"></p>
-<div class="pt-2 border-t border-white/5"><p class="text-xs text-steel mb-2">Gestores que recomendamos</p><div class="flex flex-wrap gap-2 text-sm"><a href="https://privtr.ee/@stark" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg bg-neon/10 border border-neon/30 text-neon">Proton Pass</a><a href="https://keepassxc.org/" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-mist">KeePassXC</a></div></div>
 </div>
-
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-2xl space-y-4">
-<div class="flex items-center gap-2"><span class="text-xs font-medium px-2 py-0.5 rounded-md bg-white/10 text-mist">2 · ¿Cuánto tarda en romperse?</span></div>
-<p class="text-xs text-steel">Escribe o pega una contraseña. La estimación es solo en tu dispositivo (fuerza bruta offline).</p>
+<span class="text-xs font-medium px-2 py-0.5 rounded-md bg-white/10 text-mist">2 · ¿Cuánto tarda en romperse?</span>
 <input type="text" id="crackInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña a analizar" oninput="estimateCrack()">
 <div id="crackResult" class="text-sm space-y-2 text-steel"></div>
 </div>
 </section>
 
 <section id="panel-pwdleak" class="tool-panel">
-<div class="mb-2 text-xs text-rose-300/80 uppercase tracking-wider font-medium">Exposición de contraseña</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">¿Tu contraseña está filtrada?</h1>
-<p class="text-steel mb-3 max-w-2xl text-sm">Comprueba sin enviar la contraseña completa (solo un prefijo del hash).</p>
+<div class="mb-2 text-xs text-rose-300/80 uppercase tracking-wider font-medium">Exposición</div>
+<h1 class="text-2xl font-bold text-white mb-4">¿Contraseña filtrada?</h1>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="password" id="pwdLeakInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña">
 <button onclick="checkPwdLeak()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Comprobar</button>
@@ -166,20 +151,20 @@ input[type=range]{accent-color:#0a84ff}
 </section>
 
 <section id="panel-nombres" class="tool-panel">
-<div class="mb-2 text-xs text-violet-300/80 uppercase tracking-wider font-medium">Identidad operativa</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Generador de nombres</h1>
+<div class="mb-2 text-xs text-violet-300/80 uppercase tracking-wider font-medium">Identidad</div>
+<h1 class="text-2xl font-bold text-white mb-4">Generador de nombres</h1>
 <div class="grid lg:grid-cols-5 gap-6 max-w-4xl">
-<div class="lg:col-span-2 space-y-4 p-6 rounded-2xl bg-panel border border-white/5">
+<div class="lg:col-span-2 p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
 <select id="nameStyle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="sombra">Sombra</option><option value="tecnico">Técnico</option><option value="natural">Natural</option><option value="corto">Corto</option><option value="hex">Hex</option><option value="aleatorio">Aleatorio</option></select>
 <button id="nameBtn" onclick="generateName()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button>
 </div>
-<div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 flex flex-col justify-center"><p class="text-xs text-steel mb-2 uppercase tracking-wider">Resultado</p><div class="flex flex-wrap items-center gap-3"><span id="nameResult" class="text-2xl font-semibold text-white result-box break-all">—</span><button onclick="copyPlain('nameResult')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button></div></div>
+<div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 flex items-center gap-3"><span id="nameResult" class="text-2xl text-white result-box">—</span><button onclick="copyPlain('nameResult')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button></div>
 </div>
 </section>
 
 <section id="panel-metadatos" class="tool-panel">
 <div class="mb-2 text-xs text-amber-300/80 uppercase tracking-wider font-medium">Fotos</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Limpiador de metadatos</h1>
+<h1 class="text-2xl font-bold text-white mb-4">Limpiar metadatos</h1>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="metaFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
 <button id="metaBtn" onclick="stripMetadata()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Eliminar metadatos</button>
@@ -188,10 +173,20 @@ input[type=range]{accent-color:#0a84ff}
 </div>
 </section>
 
+<section id="panel-metalectura" class="tool-panel">
+<div class="mb-2 text-xs text-amber-300/80 uppercase tracking-wider font-medium">Inspección</div>
+<h1 class="text-2xl font-bold text-white mb-2">Leer metadatos</h1>
+<p class="text-steel text-sm mb-4 max-w-xl">Muestra nombre, tamaño, dimensiones y, en JPEG, fabricante, modelo, software y fecha si están en el EXIF. Todo local.</p>
+<div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
+<input type="file" id="metaReadFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
+<button onclick="readMetadata()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Leer</button>
+<div id="metaReadOut" class="text-sm"></div>
+</div>
+</section>
+
 <section id="panel-pdf" class="tool-panel">
 <div class="mb-2 text-xs text-sky-300/80 uppercase tracking-wider font-medium">Documentos</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Herramientas para .pdf</h1>
-<p class="text-steel mb-3 max-w-2xl text-sm">Todo local: info, combinar, extraer, rotar, eliminar, invertir, metadatos, marca de agua, numeración y página en blanco.</p>
+<h1 class="text-2xl font-bold text-white mb-4">Herramientas para .pdf</h1>
 <div class="flex flex-wrap gap-2 mb-6">
 <button class="pdf-tab active px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="info" onclick="showPdfSub('info')">Info</button>
 <button class="pdf-tab px-3 py-1.5 rounded-xl border border-white/10 text-sm text-steel" data-pdf="merge" onclick="showPdfSub('merge')">Combinar</button>
@@ -206,24 +201,24 @@ input[type=range]{accent-color:#0a84ff}
 </div>
 <div id="pdf-info" class="pdf-sub active p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfInfoFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="pdfInfo()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Analizar</button><div id="pdfInfoOut" class="text-sm text-steel"></div></div>
 <div id="pdf-merge" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfMergeFiles" accept="application/pdf" multiple class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="pdfMerge()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Combinar</button><div id="pdfMergeOut" class="text-sm text-steel"></div></div>
-<div id="pdf-split" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfSplitFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfSplitRange" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Páginas: 1-3,5"><button onclick="pdfSplit()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Extraer</button><div id="pdfSplitOut" class="text-sm text-steel"></div></div>
-<div id="pdf-rotate" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfRotateFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><select id="pdfRotateAngle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="90">90° derecha</option><option value="180">180°</option><option value="270">90° izquierda</option></select><button onclick="pdfRotate()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Rotar</button><div id="pdfRotateOut" class="text-sm text-steel"></div></div>
-<div id="pdf-remove" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfRemoveFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfRemoveRange" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Páginas a eliminar: 2,4-6"><button onclick="pdfRemove()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Eliminar y descargar</button><div id="pdfRemoveOut" class="text-sm text-steel"></div></div>
-<div id="pdf-reverse" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfReverseFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="pdfReverse()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Invertir orden</button><div id="pdfReverseOut" class="text-sm text-steel"></div></div>
-<div id="pdf-meta" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfMetaFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfMetaTitle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Título"><input type="text" id="pdfMetaAuthor" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Autor"><button onclick="pdfSetMeta()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Aplicar y descargar</button><div id="pdfMetaOut" class="text-sm text-steel"></div></div>
-<div id="pdf-wm" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfWmFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfWmText" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto de la marca" value="CONFIDENCIAL"><button onclick="pdfWatermark()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Aplicar marca de agua</button><div id="pdfWmOut" class="text-sm text-steel"></div></div>
-<div id="pdf-num" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfNumFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="pdfPageNumbers()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Añadir números de página</button><div id="pdfNumOut" class="text-sm text-steel"></div></div>
-<div id="pdf-blank" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfBlankFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><label class="block text-sm text-steel">Insertar página en blanco después de la página nº</label><input type="number" id="pdfBlankAfter" min="0" value="0" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><p class="text-xs text-steel">0 = al inicio</p><button onclick="pdfBlank()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Insertar</button><div id="pdfBlankOut" class="text-sm text-steel"></div></div>
+<div id="pdf-split" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfSplitFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfSplitRange" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="1-3,5"><button onclick="pdfSplit()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Extraer</button><div id="pdfSplitOut" class="text-sm text-steel"></div></div>
+<div id="pdf-rotate" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfRotateFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><select id="pdfRotateAngle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select><button onclick="pdfRotate()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Rotar</button><div id="pdfRotateOut" class="text-sm text-steel"></div></div>
+<div id="pdf-remove" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfRemoveFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfRemoveRange" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="2,4-6"><button onclick="pdfRemove()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Eliminar</button><div id="pdfRemoveOut" class="text-sm text-steel"></div></div>
+<div id="pdf-reverse" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfReverseFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="pdfReverse()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Invertir</button><div id="pdfReverseOut" class="text-sm text-steel"></div></div>
+<div id="pdf-meta" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfMetaFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfMetaTitle" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Título"><input type="text" id="pdfMetaAuthor" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Autor"><button onclick="pdfSetMeta()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Aplicar</button><div id="pdfMetaOut" class="text-sm text-steel"></div></div>
+<div id="pdf-wm" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfWmFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="text" id="pdfWmText" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" value="CONFIDENCIAL"><button onclick="pdfWatermark()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Marca de agua</button><div id="pdfWmOut" class="text-sm text-steel"></div></div>
+<div id="pdf-num" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfNumFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><button onclick="pdfPageNumbers()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Numerar</button><div id="pdfNumOut" class="text-sm text-steel"></div></div>
+<div id="pdf-blank" class="pdf-sub p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4"><input type="file" id="pdfBlankFile" accept="application/pdf" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon"><input type="number" id="pdfBlankAfter" min="0" value="0" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><button onclick="pdfBlank()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Insertar página en blanco</button><div id="pdfBlankOut" class="text-sm text-steel"></div></div>
 </section>
 
 <section id="panel-compresor" class="tool-panel">
 <div class="mb-2 text-xs text-orange-300/80 uppercase tracking-wider font-medium">Peso</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Compresor de imágenes</h1>
+<h1 class="text-2xl font-bold text-white mb-4">Compresor</h1>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-5">
 <input type="file" id="compFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
-<div><div class="flex justify-between text-sm mb-1"><span class="text-steel">Calidad</span><span id="compQualLabel" class="text-white font-medium">Buena calidad</span></div>
+<div><div class="flex justify-between text-sm mb-1"><span class="text-steel">Calidad</span><span id="compQualLabel" class="text-white">Buena calidad</span></div>
 <input type="range" id="compQual" min="0.2" max="1" step="0.05" value="0.8" class="w-full" oninput="updateCompLabel()">
-<div class="flex justify-between text-[10px] text-steel/70 mt-1"><span>Muy baja</span><span>Baja</span><span>Media</span><span>Buena</span><span>Nítida</span></div></div>
+<div class="flex justify-between text-[10px] text-steel/70"><span>Muy baja</span><span>Nítida</span></div></div>
 <button id="compBtn" onclick="compressImage()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Comprimir</button>
 <div id="compProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="compProgress" class="progress-bar"></div></div><p id="compStatus" class="text-sm text-steel"></p></div>
 <div id="compDownloadWrap" class="hidden"><button id="compDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm">Descargar</button></div>
@@ -232,7 +227,7 @@ input[type=range]{accent-color:#0a84ff}
 
 <section id="panel-convertidor" class="tool-panel">
 <div class="mb-2 text-xs text-cyan-300/80 uppercase tracking-wider font-medium">Formatos</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Convertidor multimedia</h1>
+<h1 class="text-2xl font-bold text-white mb-4">Convertidor multimedia</h1>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="file" id="convFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
 <select id="convFormat" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select>
@@ -244,11 +239,11 @@ input[type=range]{accent-color:#0a84ff}
 
 <section id="panel-hashes" class="tool-panel">
 <div class="mb-2 text-xs text-lime-300/80 uppercase tracking-wider font-medium">Integridad</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Hashes</h1>
+<h1 class="text-2xl font-bold text-white mb-4">Hashes</h1>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <div class="flex gap-4 text-sm"><label class="flex items-center gap-2"><input type="radio" name="hashSrc" value="file" checked class="accent-neon" onchange="toggleHashSrc()"> Archivo</label><label class="flex items-center gap-2"><input type="radio" name="hashSrc" value="text" class="accent-neon" onchange="toggleHashSrc()"> Texto</label></div>
 <input type="file" id="hashFile" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
-<textarea id="hashText" class="hidden w-full h-24 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto"></textarea>
+<textarea id="hashText" class="hidden w-full h-24 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white"></textarea>
 <button onclick="computeHashes()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Calcular</button>
 <div id="hashResults" class="space-y-2 text-sm result-box hidden"></div>
 </div>
@@ -256,79 +251,90 @@ input[type=range]{accent-color:#0a84ff}
 
 <section id="panel-passphrases" class="tool-panel">
 <div class="mb-2 text-xs text-pink-300/80 uppercase tracking-wider font-medium">Memorables</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Frases de paso</h1>
+<h1 class="text-2xl font-bold text-white mb-4">Frases de paso</h1>
 <div class="grid lg:grid-cols-5 gap-6 max-w-4xl">
 <div class="lg:col-span-2 p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
-<div class="flex justify-between text-sm"><span class="text-steel">Palabras</span><span id="ppCountLabel" class="text-white font-medium">6</span></div>
+<div class="flex justify-between text-sm"><span class="text-steel">Palabras</span><span id="ppCountLabel">6</span></div>
 <input type="range" id="ppCount" min="4" max="10" value="6" class="w-full" oninput="document.getElementById('ppCountLabel').textContent=this.value">
 <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="ppCap" class="accent-neon"> Capitalizar</label>
 <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="ppNum" class="accent-neon"> Número al final</label>
-<select id="ppSep" class="w-full bg-void border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option value=" ">Espacio</option><option value="-">Guion</option><option value=".">Punto</option><option value="_">Guion bajo</option></select>
+<select id="ppSep" class="w-full bg-void border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option value=" ">Espacio</option><option value="-">Guion</option><option value=".">Punto</option></select>
 <button id="ppBtn" onclick="generatePassphrase()" class="w-full py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button>
 </div>
-<div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 space-y-3"><p class="text-xs text-steel uppercase tracking-wider">Frase</p><p id="ppResult" class="text-xl text-white result-box break-words">—</p><p id="ppStrength" class="text-sm text-steel"></p><button onclick="copyPlain('ppResult')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button></div>
+<div class="lg:col-span-3 p-6 rounded-2xl bg-panel border border-white/5 space-y-2"><p id="ppResult" class="text-xl text-white result-box">—</p><p id="ppStrength" class="text-sm text-steel"></p><button onclick="copyPlain('ppResult')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button></div>
 </div>
 </section>
 
 <section id="panel-cifrado" class="tool-panel">
 <div class="mb-2 text-xs text-indigo-300/80 uppercase tracking-wider font-medium">Cifrado local</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Cifrado de texto</h1>
-<div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
-<textarea id="cipherText" class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto"></textarea>
+<h1 class="text-2xl font-bold text-white mb-2">Cifrado y Base64</h1>
+<p class="text-steel text-sm mb-6 max-w-xl">AES-GCM con contraseña, y codificación Base64. Todo en el dispositivo.</p>
+<div class="grid lg:grid-cols-2 gap-6 max-w-4xl">
+<div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+<p class="text-white font-medium text-sm">Cifrado AES-GCM</p>
+<textarea id="cipherText" class="w-full h-24 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto"></textarea>
 <input type="password" id="cipherPass" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Contraseña">
-<div class="flex gap-3"><button onclick="encryptText()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Cifrar</button><button onclick="decryptText()" class="px-5 py-3 rounded-xl border border-white/10 text-sm text-steel">Descifrar</button></div>
-<textarea id="cipherOut" readonly class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box"></textarea>
-<button onclick="copyText('cipherOut')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button>
+<div class="flex gap-2"><button onclick="encryptText()" class="px-4 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm">Cifrar</button><button onclick="decryptText()" class="px-4 py-2.5 rounded-xl border border-white/10 text-sm text-steel">Descifrar</button></div>
+<textarea id="cipherOut" readonly class="w-full h-24 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box"></textarea>
+<button onclick="copyText('cipherOut')" class="text-xs text-steel border border-white/10 px-2 py-1 rounded-lg">Copiar</button>
+</div>
+<div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+<p class="text-white font-medium text-sm">Base64</p>
+<textarea id="b64In" class="w-full h-24 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto o Base64"></textarea>
+<div class="flex gap-2"><button onclick="b64Encode()" class="px-4 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm">Codificar</button><button onclick="b64Decode()" class="px-4 py-2.5 rounded-xl border border-white/10 text-sm text-steel">Decodificar</button></div>
+<textarea id="b64Out" readonly class="w-full h-24 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box"></textarea>
+<button onclick="copyText('b64Out')" class="text-xs text-steel border border-white/10 px-2 py-1 rounded-lg">Copiar</button>
+<p id="b64Status" class="text-sm text-steel"></p>
+</div>
+</div>
+</section>
+
+<section id="panel-stego" class="tool-panel">
+<div class="mb-2 text-xs text-fuchsia-300/80 uppercase tracking-wider font-medium">Ocultación</div>
+<h1 class="text-2xl font-bold text-white mb-2">Esteganografía básica</h1>
+<p class="text-steel text-sm mb-6 max-w-xl">Oculta un mensaje corto en los bits menos significativos de una imagen (PNG). Todo local. No es criptografía: quien sepa el método puede extraerlo.</p>
+<div class="grid lg:grid-cols-2 gap-6 max-w-4xl">
+<div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+<p class="text-white font-medium text-sm">Ocultar mensaje</p>
+<input type="file" id="stegoFile" accept="image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
+<textarea id="stegoMsg" class="w-full h-24 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Mensaje a ocultar"></textarea>
+<button onclick="stegoHide()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Ocultar en imagen</button>
+<p id="stegoStatus" class="text-sm text-steel"></p>
+<div id="stegoDownloadWrap" class="hidden"><button id="stegoDownloadBtn" class="px-5 py-3 rounded-xl border border-neon/40 text-neon text-sm">Descargar PNG</button></div>
+</div>
+<div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4">
+<p class="text-white font-medium text-sm">Revelar mensaje</p>
+<input type="file" id="stegoRevealFile" accept="image/png,image/*" class="block w-full text-sm text-steel file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/15 file:text-neon">
+<button onclick="stegoReveal()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Extraer</button>
+<pre id="stegoRevealOut" class="text-sm text-white result-box whitespace-pre-wrap break-all min-h-[4rem]"></pre>
+</div>
 </div>
 </section>
 
 <section id="panel-urls" class="tool-panel">
 <div class="mb-2 text-xs text-teal-300/80 uppercase tracking-wider font-medium">Tracking</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Limpiar URLs</h1>
+<h1 class="text-2xl font-bold text-white mb-4">Limpiar URLs</h1>
 <div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
 <input type="url" id="urlIn" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="https://…">
 <button onclick="cleanUrl()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Limpiar</button>
 <input type="text" id="urlOut" readonly class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box">
-<button onclick="copyText('urlOut')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button>
+<button onclick="copyText('urlOut')" class="text-xs text-steel border border-white/10 px-2 py-1 rounded-lg">Copiar</button>
 <p id="urlStatus" class="text-sm text-steel"></p>
-</div>
-</section>
-
-<section id="panel-uuid" class="tool-panel">
-<div class="mb-2 text-xs text-fuchsia-300/80 uppercase tracking-wider font-medium">Identificadores</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">UUID v4</h1>
-<p class="text-steel mb-4 text-sm max-w-xl">Genera identificadores únicos en local (RFC 4122). Útiles para nombres de archivo, claves temporales o referencias sin depender de un servidor.</p>
-<div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
-<button id="uuidBtn" onclick="generateUuid()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Generar UUID</button>
-<div class="flex flex-wrap items-center gap-3"><span id="uuidOut" class="text-lg text-white result-box break-all">—</span><button onclick="copyPlain('uuidOut')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button></div>
-</div>
-</section>
-
-<section id="panel-base64" class="tool-panel">
-<div class="mb-2 text-xs text-yellow-300/80 uppercase tracking-wider font-medium">Codificación</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Base64</h1>
-<p class="text-steel mb-4 text-sm max-w-xl">Codifica o decodifica texto en Base64 sin salir del navegador.</p>
-<div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-xl space-y-4">
-<textarea id="b64In" class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Texto o Base64"></textarea>
-<div class="flex gap-3"><button onclick="b64Encode()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Codificar</button><button onclick="b64Decode()" class="px-5 py-3 rounded-xl border border-white/10 text-sm text-steel">Decodificar</button></div>
-<textarea id="b64Out" readonly class="w-full h-28 bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white result-box"></textarea>
-<button onclick="copyText('b64Out')" class="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-steel">Copiar</button>
-<p id="b64Status" class="text-sm text-steel"></p>
 </div>
 </section>
 
 <section id="panel-acortador" class="tool-panel">
 <div class="mb-2 text-xs text-steel uppercase tracking-wider font-medium">Offline</div>
-<h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Identificadores cortos</h1>
+<h1 class="text-2xl font-bold text-white mb-4">Identificadores cortos</h1>
 <div class="grid lg:grid-cols-2 gap-6 max-w-3xl">
 <div class="p-6 rounded-2xl bg-panel border border-white/5 space-y-4"><input type="text" id="shortInput" class="w-full bg-void border border-white/10 rounded-xl px-4 py-3 text-sm text-white" placeholder="Referencia opcional"><button onclick="generateShortId()" class="px-5 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm">Generar</button></div>
-<div class="p-6 rounded-2xl bg-panel border border-white/5"><p class="text-xs text-steel uppercase tracking-wider mb-2">Código</p><div class="flex items-center gap-3"><span id="shortOutput" class="text-xl font-semibold text-white result-box">—</span><button onclick="copyPlain('shortOutput')" class="text-xs text-steel border border-white/10 px-2 py-1 rounded-lg">Copiar</button></div><p id="shortStatus" class="text-sm text-steel mt-3"></p></div>
+<div class="p-6 rounded-2xl bg-panel border border-white/5"><span id="shortOutput" class="text-xl text-white result-box">—</span><button onclick="copyPlain('shortOutput')" class="ml-2 text-xs text-steel border border-white/10 px-2 py-1 rounded-lg">Copiar</button><p id="shortStatus" class="text-sm text-steel mt-3"></p></div>
 </div>
 </section>
 
 </main>
 <footer class="border-t border-white/5 py-8 mt-auto">
-<div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-steel">
+<div class="max-w-6xl mx-auto px-4 text-sm text-steel flex flex-col sm:flex-row justify-between gap-4">
 <p>© 2026 Privacidad Tools · Local · Sin rastros</p>
 <p class="flex gap-4"><button onclick="showTool('principios')" class="hover:text-mist">Principios</button><a href="https://boringprivacy.io" class="hover:text-mist">Academia</a><a href="https://github.com/StarkPrivacy/privacidad-tools" class="hover:text-mist">GitHub</a></p>
 </div>
