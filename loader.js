@@ -10,10 +10,12 @@
   load('https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js', function(){
     load('extra.js', function(){
       load('qr_fix.js', function(){
-        load('extra_more.js', function(){
-          load('nav_cat.js', function(){
-            load('panels.js', function(){
-              load('pdf-extra.js');
+        load('extra_ft.js', function(){
+          load('extra_blur.js', function(){
+            load('nav_cat.js', function(){
+              load('panels.js', function(){
+                load('pdf-extra.js');
+              });
             });
           });
         });
