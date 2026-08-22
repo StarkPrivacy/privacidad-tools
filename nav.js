@@ -50,17 +50,22 @@ alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7
 };
 const ICON_COLOR={seguridad:'text-emerald-400',identidad:'text-violet-400',archivos:'text-amber-400',red:'text-cyan-400'};
 let currentCat='all',currentQ='';
-function showTool(id){
+function showTool(id, attempt){
+  attempt=attempt||0;
   document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
-  const p=document.getElementById('panel-'+id);
+  var p=document.getElementById('panel-'+id);
+  if(!p && attempt<20){
+    setTimeout(function(){ showTool(id, attempt+1); }, 100);
+    return;
+  }
   if(p)p.classList.add('active');
   document.getElementById('mobileTools')?.classList.add('hidden');
-  const bar=document.getElementById('toolBar');
+  var bar=document.getElementById('toolBar');
   if(bar){
     if(id==='home'||id==='principios'){bar.classList.add('hidden')}
     else{
       bar.classList.remove('hidden');
-      const meta=TOOL_META.find(t=>t.id===id);
+      var meta=TOOL_META.find(t=>t.id===id);
       document.getElementById('toolBarTitle').textContent=meta?meta.title:(id==='principios'?'Principios':'Herramienta');
     }
   }
@@ -69,41 +74,37 @@ function showTool(id){
   if(id==='storage')try{refreshStorageView()}catch(e){}
 }
 function filterTools(){
-  const q=currentQ.trim().toLowerCase();
-  const grid=document.getElementById('toolsGrid');
+  var q=currentQ.trim().toLowerCase();
+  var grid=document.getElementById('toolsGrid');
   if(!grid)return;
-  let html='';
-  const groups=currentCat==='all'?['seguridad','identidad','archivos','red']:[currentCat];
-  groups.forEach(cat=>{
-    const items=TOOL_META.filter(t=>t.cat===cat&&(!q||t.title.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||cat.includes(q)));
+  var html='';
+  var groups=currentCat==='all'?['seguridad','identidad','archivos','red']:[currentCat];
+  groups.forEach(function(cat){
+    var items=TOOL_META.filter(function(t){return t.cat===cat&&(!q||t.title.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||cat.includes(q))});
     if(!items.length)return;
-    html+=`<div class="col-span-full mt-2 first:mt-0"><p class="text-xs uppercase tracking-wider text-steel/80 mb-2 font-medium">${CAT_LABEL[cat]}</p></div>`;
-    items.forEach(t=>{
-      const ic=ICONS[t.icon]||ICONS.file;
-      const col=ICON_COLOR[t.cat]||'text-neon';
-      html+=`<button onclick="showTool('${t.id}')" class="tool-card group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/35 hover:glow-blue transition flex items-start justify-between gap-3">
-        <div class="min-w-0"><h2 class="font-semibold text-white">${t.title}</h2><p class="text-sm text-steel mt-0.5 leading-snug">${t.desc}</p></div>
-        <svg class="w-5 h-5 ${col} shrink-0 mt-0.5 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${ic}</svg>
-      </button>`;
+    html+='<div class="col-span-full mt-2 first:mt-0"><p class="text-xs uppercase tracking-wider text-steel/80 mb-2 font-medium">'+CAT_LABEL[cat]+'</p></div>';
+    items.forEach(function(t){
+      var ic=ICONS[t.icon]||ICONS.file;
+      var col=ICON_COLOR[t.cat]||'text-neon';
+      html+='<button onclick="showTool(\''+t.id+'\')" class="tool-card group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/35 hover:glow-blue transition flex items-start justify-between gap-3"><div class="min-w-0"><h2 class="font-semibold text-white">'+t.title+'</h2><p class="text-sm text-steel mt-0.5 leading-snug">'+t.desc+'</p></div><svg class="w-5 h-5 '+col+' shrink-0 mt-0.5 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">'+ic+'</svg></button>';
     });
   });
-  if(!html)html='<p class="col-span-full text-steel text-sm py-8 text-center">Ninguna herramienta coincide con la busqueda.</p>';
+  if(!html)html='<p class="col-span-full text-steel text-sm py-8 text-center">Ninguna herramienta coincide</p>';
   grid.innerHTML=html;
 }
 function setCat(cat){
   currentCat=cat;
-  document.querySelectorAll('[data-cat]').forEach(b=>{
-    const on=b.getAttribute('data-cat')===cat;
+  document.querySelectorAll('[data-cat]').forEach(function(b){
+    var on=b.getAttribute('data-cat')===cat;
     b.classList.toggle('bg-neon/15',on);b.classList.toggle('text-neon',on);b.classList.toggle('border-neon/30',on);
     b.classList.toggle('text-steel',!on);b.classList.toggle('border-white/10',!on);
   });
   filterTools();
 }
 function onSearch(v){currentQ=v;filterTools()}
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('mobileToolsBtn')?.addEventListener('click',()=>document.getElementById('mobileTools').classList.toggle('hidden'));
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('mobileToolsBtn')?.addEventListener('click',function(){document.getElementById('mobileTools').classList.toggle('hidden')});
   filterTools();
-  const hash=(location.hash||'').slice(1);
-  if(hash&&document.getElementById('panel-'+hash))showTool(hash);
-  else showTool('home');
+  var hash=(location.hash||'').slice(1);
+  if(hash)showTool(hash);else showTool('home');
 });
