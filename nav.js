@@ -63,9 +63,7 @@ function filterTools(){
   const grid=document.getElementById('toolsGrid');
   if(!grid)return;
   let html='';
-  const groups=currentCat==='all'
-    ?['seguridad','identidad','archivos','red']
-    :[currentCat];
+  const groups=currentCat==='all'?['seguridad','identidad','archivos','red']:[currentCat];
   groups.forEach(cat=>{
     const items=TOOL_META.filter(t=>t.cat===cat&&(!q||t.title.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||cat.includes(q)));
     if(!items.length)return;
@@ -74,7 +72,7 @@ function filterTools(){
       const ic=ICONS[t.icon]||ICONS.file;
       const col=ICON_COLOR[t.cat]||'text-neon';
       html+=`<button onclick="showTool('${t.id}')" class="tool-card group text-left p-4 rounded-2xl bg-panel border border-white/5 hover:border-neon/35 hover:glow-blue transition flex items-start justify-between gap-3">
-        <div class="min-w-0"><h2 class="font-semibold text-white group-hover:text-white">${t.title}</h2><p class="text-sm text-steel mt-0.5 leading-snug">${t.desc}</p></div>
+        <div class="min-w-0"><h2 class="font-semibold text-white">${t.title}</h2><p class="text-sm text-steel mt-0.5 leading-snug">${t.desc}</p></div>
         <svg class="w-5 h-5 ${col} shrink-0 mt-0.5 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${ic}</svg>
       </button>`;
     });
@@ -106,42 +104,166 @@ document.addEventListener('DOMContentLoaded',()=>{
   else showTool('home');
 });
 
+function fpEsc(s){return String(s??'—').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')}
+function fpSleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function fpHash(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function fpSection(title,items){
+  return `<div class="p-4 rounded-2xl bg-void border border-white/10 space-y-2">
+    <p class="text-[11px] uppercase tracking-wider text-neon/80 font-medium">${title}</p>
+    ${items.map(([k,v])=>`<div class="flex flex-col sm:flex-row sm:gap-3 py-1.5 border-b border-white/5 last:border-0"><span class="text-xs text-steel w-40 shrink-0">${fpEsc(k)}</span><span class="text-sm text-white break-all">${fpEsc(v)}</span></div>`).join('')}
+  </div>`;
+}
+async function probeWebRTC(){
+  return new Promise(resolve=>{
+    const ips=new Set();
+    let done=false;
+    const finish=()=>{if(done)return;done=true;try{pc.close()}catch(e){}resolve([...ips])};
+    let pc;
+    try{
+      pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+      pc.createDataChannel('');
+      pc.onicecandidate=e=>{
+        if(!e.candidate){finish();return}
+        const c=e.candidate.candidate||'';
+        const m=/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9:]{3,})/i.exec(c);
+        if(m)ips.add(m[1]);
+      };
+      pc.createOffer().then(o=>pc.setLocalDescription(o)).catch(()=>finish());
+      setTimeout(finish,1800);
+    }catch(e){resolve([])}
+  });
+}
+async function probeAudio(){
+  try{
+    const ctx=new (window.OfflineAudioContext||window.webkitOfflineAudioContext)(1,44100,44100);
+    const osc=ctx.createOscillator();const comp=ctx.createDynamicsCompressor();
+    osc.type='triangle';osc.frequency.value=10000;comp.threshold.value=-50;comp.knee.value=40;
+    osc.connect(comp);comp.connect(ctx.destination);osc.start(0);
+    const buf=await ctx.startRendering();
+    let sum=0;const data=buf.getChannelData(0);
+    for(let i=4500;i<5000;i++)sum+=Math.abs(data[i]);
+    return (await fpHash('audio:'+sum.toFixed(8))).slice(0,16)+'…';
+  }catch(e){return 'no disponible'}
+}
+async function probeCanvas(){
+  try{
+    const c=document.createElement('canvas');c.width=320;c.height=120;
+    const ctx=c.getContext('2d');
+    ctx.textBaseline='alphabetic';ctx.font='18px "Arial"';
+    ctx.fillStyle='#0a84ff';ctx.fillRect(0,0,320,120);
+    ctx.fillStyle='#fff';ctx.fillText('privacidad·tools 🌟',12,40);
+    ctx.fillStyle='rgba(255,0,120,0.5)';ctx.fillRect(40,50,180,40);
+    ctx.font='14px "Times New Roman"';ctx.fillStyle='#0f0';ctx.fillText('AaBbCc 0123',12,100);
+    const data=c.toDataURL();
+    return (await fpHash(data)).slice(0,20)+'…';
+  }catch(e){return 'no disponible'}
+}
+function probeWebGL(){
+  try{
+    const gl=document.createElement('canvas').getContext('webgl')||document.createElement('canvas').getContext('experimental-webgl');
+    if(!gl)return {vendor:'—',renderer:'—',ok:false};
+    const dbg=gl.getExtension('WEBGL_debug_renderer_info');
+    return{
+      vendor:dbg?gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL):gl.getParameter(gl.VENDOR),
+      renderer:dbg?gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),
+      ok:true
+    };
+  }catch(e){return{vendor:'error',renderer:'error',ok:false}}
+}
+
 async function analyzeFingerprint(){
   const out=document.getElementById('fpOut');
+  const wrap=document.getElementById('fpProgressWrap');
+  const bar=document.getElementById('fpProgress');
+  const status=document.getElementById('fpStatus');
+  const btn=document.getElementById('fpBtn');
   if(!out)return;
-  out.innerHTML='<p class="text-steel text-sm">Analizando en local…</p>';
-  const rows=[];
-  const add=(k,v)=>rows.push([k,v]);
-  add('Idioma',navigator.language||'—');
-  add('Idiomas',(navigator.languages||[]).join(', ')||'—');
-  add('Zona horaria',Intl.DateTimeFormat().resolvedOptions().timeZone||'—');
-  add('Plataforma',navigator.platform||'—');
-  add('Núcleos CPU',String(navigator.hardwareConcurrency||'—'));
-  add('Memoria (approx.)',navigator.deviceMemory?navigator.deviceMemory+' GB':'no expuesta');
-  add('Pantalla',`${screen.width}×${screen.height} · DPR ${window.devicePixelRatio||1}`);
-  add('Color depth',String(screen.colorDepth||'—'));
-  add('Cookies',navigator.cookieEnabled?'habilitadas':'deshabilitadas');
-  add('Do Not Track',navigator.doNotTrack||'no indicado');
-  add('User-Agent',navigator.userAgent||'—');
-  try{
-    const c=document.createElement('canvas');
-    c.width=240;c.height=60;
-    const ctx=c.getContext('2d');
-    ctx.textBaseline='top';ctx.font='16px Arial';ctx.fillStyle='#0a84ff';ctx.fillRect(0,0,240,60);
-    ctx.fillStyle='#fff';ctx.fillText('privacidad·tools',8,20);
-    const data=c.toDataURL();
-    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(data));
-    const hex=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,16);
-    add('Huella canvas (extracto)',hex+'…');
-  }catch(e){add('Huella canvas','no disponible')}
-  try{
-    const gl=document.createElement('canvas').getContext('webgl');
-    if(gl){
-      const dbg=gl.getExtension('WEBGL_debug_renderer_info');
-      add('WebGL vendor',dbg?gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL):gl.getParameter(gl.VENDOR));
-      add('WebGL renderer',dbg?gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER));
-    }else add('WebGL','no disponible');
-  }catch(e){add('WebGL','error')}
-  out.innerHTML=rows.map(([k,v])=>`<div class="flex flex-col sm:flex-row sm:gap-4 py-2.5 border-b border-white/5"><span class="text-xs text-steel w-44 shrink-0">${k}</span><span class="text-sm text-white break-all">${String(v).replace(/</g,'&lt;')}</span></div>`).join('')+
-    `<p class="text-xs text-steel mt-4 leading-relaxed">Esto no se envía a ningún servidor. Sirve para ver señales que sitios y trackers pueden combinar para reconocerte. Extensiones anti-huella y contenedores de identidad reducen parte de esta superficie.</p>`;
+  if(btn)btn.disabled=true;
+  if(wrap)wrap.classList.remove('hidden');
+  out.innerHTML='';
+  const setP=(p,msg)=>{if(bar)bar.style.width=p+'%';if(status)status.textContent=msg};
+
+  setP(8,'Leyendo entorno del sistema…');
+  await fpSleep(180);
+  const sys=[
+    ['Idioma',navigator.language||'—'],
+    ['Idiomas',(navigator.languages||[]).join(', ')||'—'],
+    ['Zona horaria',Intl.DateTimeFormat().resolvedOptions().timeZone||'—'],
+    ['Plataforma',navigator.platform||'—'],
+    ['Núcleos CPU',String(navigator.hardwareConcurrency??'—')],
+    ['Memoria (approx.)',navigator.deviceMemory?navigator.deviceMemory+' GB':'no expuesta'],
+    ['Cookies',navigator.cookieEnabled?'habilitadas':'deshabilitadas'],
+    ['Do Not Track',navigator.doNotTrack||'no indicado']
+  ];
+
+  setP(22,'Midiendo pantalla y viewport…');
+  await fpSleep(160);
+  const screenRows=[
+    ['Resolución',`${screen.width}×${screen.height}`],
+    ['Disponible',`${screen.availWidth}×${screen.availHeight}`],
+    ['DPR',String(window.devicePixelRatio||1)],
+    ['Profundidad de color',String(screen.colorDepth||'—')],
+    ['Ventana',`${window.innerWidth}×${window.innerHeight}`]
+  ];
+
+  setP(38,'Calculando huella de canvas…');
+  await fpSleep(120);
+  const canvasHash=await probeCanvas();
+
+  setP(52,'Consultando WebGL…');
+  await fpSleep(140);
+  const gl=probeWebGL();
+
+  setP(65,'Muestreando audio offline…');
+  const audioHash=await probeAudio();
+  await fpSleep(80);
+
+  setP(78,'Comprobando candidatos WebRTC (STUN)…');
+  if(status)status.textContent='Comprobando candidatos WebRTC…';
+  const ips=await probeWebRTC();
+  setP(92,'Organizando resultados…');
+  await fpSleep(120);
+
+  const ua=navigator.userAgent||'—';
+  let risk=35;
+  if(gl.ok)risk+=15;
+  if(canvasHash!=='no disponible')risk+=15;
+  if(audioHash!=='no disponible')risk+=10;
+  if(ips.length)risk+=20;
+  if(navigator.deviceMemory)risk+=5;
+  risk=Math.min(95,risk);
+  const riskLabel=risk>=70?'Alta superficie':risk>=45?'Media':'Más contenida';
+  const riskColor=risk>=70?'text-red-300 border-red-500/30 bg-red-500/10':risk>=45?'text-amber-300 border-amber-500/30 bg-amber-500/10':'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
+
+  setP(100,'Listo');
+  if(status)status.textContent='Análisis local completado';
+
+  const webrtcRows=ips.length
+    ?[['Candidatos detectados',ips.join(', ')],['Nota','WebRTC puede filtrar IPs locales/públicas aunque uses VPN en algunos casos']]
+    :[['Candidatos','ninguno en esta prueba'],['Nota','Bloqueo de WebRTC o red sin STUN visible']];
+
+  out.innerHTML=`
+    <div class="p-5 rounded-2xl border ${riskColor} mb-4">
+      <p class="text-xs uppercase tracking-wider opacity-80 mb-1">Superficie de rastreo (orientativa)</p>
+      <p class="text-2xl font-bold text-white">${risk}<span class="text-base font-medium text-steel">/100</span></p>
+      <p class="text-sm mt-1 ${riskColor.split(' ')[0]}">${riskLabel}</p>
+      <p class="text-xs text-steel mt-2 leading-relaxed">No es un ranking de privacidad absoluto: combina señales típicas (canvas, WebGL, audio, WebRTC). Extensiones anti-huella y contenedores reducen parte de esto.</p>
+    </div>
+    <div class="grid gap-3">
+      ${fpSection('Sistema',sys)}
+      ${fpSection('Pantalla',screenRows)}
+      ${fpSection('Huellas de renderizado',[
+        ['Canvas (SHA-256)',canvasHash],
+        ['Audio (SHA-256)',audioHash],
+        ['WebGL vendor',gl.vendor],
+        ['WebGL renderer',gl.renderer]
+      ])}
+      ${fpSection('WebRTC',webrtcRows)}
+      ${fpSection('User-Agent',[['Cadena completa',ua]])}
+    </div>
+    <p class="text-xs text-steel mt-4 leading-relaxed">Todo el análisis se ha hecho en tu navegador. No se ha subido ningún dato a un servidor nuestro.</p>`;
+  if(btn)btn.disabled=false;
 }
