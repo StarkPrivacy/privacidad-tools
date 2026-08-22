@@ -1,5 +1,3 @@
-function showTool(id){document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+id);if(p)p.classList.add('active');const m=document.getElementById('mobileTools');if(m)m.classList.add('hidden');window.scrollTo({top:0,behavior:'smooth'})}
-document.getElementById('mobileToolsBtn')?.addEventListener('click',()=>document.getElementById('mobileTools').classList.toggle('hidden'));
 function copyText(id){const el=document.getElementById(id);if(el&&el.value)navigator.clipboard.writeText(el.value)}
 function copyPlain(id){const t=document.getElementById(id)?.textContent?.trim();if(t&&t!=='—')navigator.clipboard.writeText(t)}
 function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2500)}
