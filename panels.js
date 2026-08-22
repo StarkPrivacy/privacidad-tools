@@ -1,5 +1,5 @@
 /* Inyecta paneles de herramientas nuevas si no están en el HTML */
-document.addEventListener('DOMContentLoaded',()=>{
+function injectExtraPanels(){
 if(document.getElementById('panel-ip'))return;
 const main=document.querySelector('main');if(!main)return;
 const html=`
@@ -9,4 +9,5 @@ const html=`
 <section id="panel-storage" class="tool-panel"><div class="mb-2 text-xs text-violet-300/80 uppercase tracking-wider font-medium">Identidad</div><h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Almacenamiento local</h1><p class="text-steel text-sm mb-4 max-w-2xl">Solo datos de <strong class="text-mist">este origen</strong>. El navegador no permite ver otros sitios.</p><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-2xl space-y-4"><div class="flex flex-wrap gap-2"><button onclick="refreshStorageView()" class="px-4 py-2.5 rounded-xl bg-neon text-void font-semibold text-sm">Actualizar lista</button><button onclick="clearLocalStorageTool()" class="px-4 py-2.5 rounded-xl border border-red-500/30 text-red-300 text-sm">Vaciar localStorage</button><button onclick="clearSessionStorageTool()" class="px-4 py-2.5 rounded-xl border border-white/10 text-steel text-sm">Vaciar sessionStorage</button></div><p id="storageStatus" class="text-sm text-steel"></p><div id="storageOut" class="text-sm"></div></div></section>
 <section id="panel-permisos" class="tool-panel"><div class="mb-2 text-xs text-violet-300/80 uppercase tracking-wider font-medium">Identidad</div><h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Permisos del navegador</h1><p class="text-steel text-sm mb-4 max-w-2xl">Estado de permisos para este origen. No activa cámara ni micrófono.</p><div class="p-6 rounded-2xl bg-panel border border-white/5 max-w-2xl space-y-4"><button onclick="checkPermissions()" class="px-5 py-3 rounded-xl bg-neon text-void font-semibold text-sm">Revisar permisos</button><div id="permProgressWrap" class="hidden space-y-2"><div class="progress-track"><div id="permProgress" class="progress-bar"></div></div><p id="permStatus" class="text-sm text-neon"></p></div><div id="permOut" class="text-sm"></div></div></section>`;
 const w=document.createElement('div');w.innerHTML=html;while(w.firstChild)main.appendChild(w.firstChild);
-});
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',injectExtraPanels);}else{injectExtraPanels();}
